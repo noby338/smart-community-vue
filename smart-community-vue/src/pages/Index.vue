@@ -37,6 +37,26 @@
                 <span slot="title">导航二</span>
               </el-menu-item> -->
 
+              <el-submenu index="0">
+                <template slot="title">
+                  <i class="el-icon-location"></i>
+                  <span>例子</span>
+                </template>
+                <router-link class="list-group-item" to="/tableExam">
+                  <el-menu-item index="0-1">
+                    <span slot="title">
+                      统一的表格使用
+                    </span>
+                  </el-menu-item>
+                </router-link>
+                <router-link class="list-group-item" to="/formExam">
+                  <el-menu-item index="0-2">
+                    <span slot="title">
+                      表单的使用
+                    </span>
+                  </el-menu-item>
+                </router-link>
+              </el-submenu>
               <router-link class="list-group-item" to="/home">
                 <el-menu-item index="1">
                   <i class="el-icon-s-grid"></i>

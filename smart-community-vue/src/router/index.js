@@ -5,6 +5,8 @@ import Home from '../pages/Home'
 import Emp from '../pages/Emp'
 import EmpAdd from '../pages/EmpAdd'
 import Login from '../pages/Login'
+import TableExam from '../pages/example/TableExam'
+import FormExam from '../pages/example/FormExam'
 
 
 export default new VueRouter({
@@ -12,6 +14,10 @@ export default new VueRouter({
     {
       path: '/',
       redirect: '/index'
+    },
+    {
+      path: '/login',
+      component: Login,
     },
     {
       path: '/index',
@@ -23,16 +29,24 @@ export default new VueRouter({
         {
           path: '/emp',
           component: Emp,
-        }, {
+        }, 
+        {
           path: '/empAdd',
           component: EmpAdd,
+        },
+        {
+          path: '/tableExam',
+          component: TableExam,
         }
+        ,
+        {
+          path: '/formExam',
+          component: FormExam,
+        }
+        //新添的路由放在这里
       ]
     },
-    {
-      path: '/login',
-      component: Login,
-    },
+    
 
 
   ]

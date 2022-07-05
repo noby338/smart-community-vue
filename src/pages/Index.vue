@@ -86,7 +86,6 @@
                   </el-menu-item>
                 </router-link>
               </el-submenu>
-
               <el-submenu index="3">
                 <template slot="title">
                   <i class="el-icon-location"></i>
@@ -106,15 +105,22 @@
                     </span>
                   </el-menu-item>
                 </router-link>
-                <router-link class="list-group-item" to="/Role">
+               
+              </el-submenu>
+            <el-submenu index="4">
+                <template slot="title">
+                  <i class="el-icon-user"></i>
+                  <span>权限管理</span>
+                </template>
+                 <router-link class="list-group-item" to="/Role">
                   <el-menu-item index="2-4">
                     <span slot="title">
                       角色管理
                     </span>
                   </el-menu-item>
                 </router-link>
+               
               </el-submenu>
-
 
             </el-menu>
           </el-col>

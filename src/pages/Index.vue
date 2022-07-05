@@ -113,7 +113,7 @@
                   <span>权限管理</span>
                 </template>
                  <router-link class="list-group-item" to="/Role">
-                  <el-menu-item index="2-4">
+                  <el-menu-item index="4-1">
                     <span slot="title">
                       角色管理
                     </span>

@@ -1,27 +1,53 @@
-import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 
-Vue.use(VueRouter)
+import Index from '../pages/Index'
+import Home from '../pages/Home'
+import Emp from '../pages/Emp'
+import EmpAdd from '../pages/EmpAdd'
+import Login from '../pages/Login'
+import TableExam from '../pages/example/TableExam'
+import FormExam from '../pages/example/FormExam'
 
-const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
-]
 
-const router = new VueRouter({
-  routes
+export default new VueRouter({
+  routes: [
+    {
+      path: '/',
+      redirect: '/index'
+    },
+    {
+      path: '/login',
+      component: Login,
+    },
+    {
+      path: '/index',
+      component: Index,
+      children: [{
+          path: '/home',
+          component: Home,
+        },
+        {
+          path: '/emp',
+          component: Emp,
+        }, 
+        {
+          path: '/empAdd',
+          component: EmpAdd,
+        },
+        {
+          path: '/tableExam',
+          component: TableExam,
+        }
+        ,
+        {
+          path: '/formExam',
+          component: FormExam,
+        }
+        //新添的路由放在这里
+      ]
+    },
+    
+
+
+  ]
 })
-
-export default router

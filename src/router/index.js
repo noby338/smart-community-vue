@@ -7,47 +7,52 @@ import EmpAdd from '../pages/EmpAdd'
 import Login from '../pages/Login'
 import TableExam from '../pages/example/TableExam'
 import FormExam from '../pages/example/FormExam'
+import Role from '../pages/Role';
 
 
 export default new VueRouter({
-  routes: [
-    {
-      path: '/',
-      redirect: '/index'
-    },
-    {
-      path: '/login',
-      component: Login,
-    },
-    {
-      path: '/index',
-      component: Index,
-      children: [{
-          path: '/home',
-          component: Home,
+    routes: [
+        {
+            path: '/',
+            redirect: '/index'
         },
         {
-          path: '/emp',
-          component: Emp,
-        }, 
-        {
-          path: '/empAdd',
-          component: EmpAdd,
+            path: '/login',
+            component: Login,
         },
         {
-          path: '/tableExam',
-          component: TableExam,
-        }
-        ,
-        {
-          path: '/formExam',
-          component: FormExam,
-        }
-        //新添的路由放在这里
-      ]
-    },
-    
+            path: '/index',
+            component: Index,
+            children: [{
+                path: '/home',
+                component: Home,
+            },
+            {
+                path: '/emp',
+                component: Emp,
+            },
+            {
+                path: '/empAdd',
+                component: EmpAdd,
+            },
+            {
+                path: '/tableExam',
+                component: TableExam,
+            }
+                ,
+            {
+                path: '/formExam',
+                component: FormExam,
+            },
+            {
+                path: '/Role',
+                component: Role,
+            }
+                //新添的路由放在这里
+            ]
+        },
 
 
-  ]
+
+    ]
 })

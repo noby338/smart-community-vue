@@ -8,6 +8,7 @@ import Login from '../pages/Login'
 import TableExam from '../pages/example/TableExam'
 import FormExam from '../pages/example/FormExam'
 import Role from '../pages/Role';
+import Parking from '../pages/Parking';
 
 
 export default new VueRouter({
@@ -47,6 +48,10 @@ export default new VueRouter({
             {
                 path: '/Role',
                 component: Role,
+            },
+            {
+                path: '/parking',
+                component: Parking,
             }
                 //新添的路由放在这里
             ]

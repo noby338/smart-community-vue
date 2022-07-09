@@ -4,17 +4,9 @@
     <div :title="parkingLot.parkingLotName">
       <h2>{{ parkingLot.parkingLotName }}信息管理</h2>
     </div>
-
-    <!-- <div class="circleCenter">
-      <el-progress type="circle" width="150" :percentage="percentage1" :format="format1" color="indigo"></el-progress>
-      <el-progress type="circle" style="margin-left:40px" width="150" :percentage="percentage2" :format="format2" color="blue"></el-progress>
-      <el-progress type="circle" style="margin-left:40px" width="150" :percentage="percentage3" :format="format3" color="orange"></el-progress>
-      <el-progress type="circle" style="margin-left:40px" width="150" :percentage="percentage4" :format="format4" color="green"></el-progress>
-    </div> -->
-
     <div class="parkingInfo">
       <!-- 条件查询 -->
-      <div>
+      <div v-if="isShowPageAndSearch">
         <el-form ref="parkingInfo" :inline="true" :model="parkingInfo" class="demo-form-inline">
           <el-form-item label="车位编号">
             <el-input v-model="parkingInfo.parkNo" placeholder="车位号"></el-input>
@@ -36,11 +28,23 @@
           </el-form-item>
         </el-form>
       </div>
-
+      <!-- tab标签页 -->
       <div>
         <template>
-          <el-tabs :tab-position="tabPosition">
-            <el-tab-pane label="车位信息">
+          <el-tabs :tab-position="tabPosition" @tab-click="showPageAndSearch" v-model="activeName">
+            <el-tab-pane label="车库信息" name="first">
+              <!-- <div class="circleCenter">
+                <el-progress type="circle" width="150" :percentage="percentage1" :format="format1" color="indigo">
+                </el-progress>
+                <el-progress type="circle" style="margin-left:40px" width="150" :percentage="percentage2"
+                  :format="format2" color="blue"></el-progress>
+                <el-progress type="circle" style="margin-left:40px" width="150" :percentage="percentage3"
+                  :format="format3" color="orange"></el-progress>
+                <el-progress type="circle" style="margin-left:40px" width="150" :percentage="percentage4"
+                  :format="format4" color="green"></el-progress>
+              </div> -->
+            </el-tab-pane>
+            <el-tab-pane label="车位信息" name="second">
               <div>
                 <el-table :data="pageBean.list" style="width: 100%" height="500">
                   <el-table-column el-table-column prop="parkNo" label="车位编号" width="180">
@@ -64,28 +68,26 @@
                   </el-table-column>
                 </el-table>
               </div>
-
             </el-tab-pane>
-            <el-tab-pane label="租售车位">
+            <el-tab-pane label="租售车位" name="third">
               <div>
                 <el-table :data="pageBean.list" style="width: 100%" height="500">
-                  <el-table-column el-table-column prop="parkNo" label="车位编号" width="180">
+                  <el-table-column el-table-column prop="parkNo" label="车位编号" width="150">
                   </el-table-column>
-                  <el-table-column prop="parkingLot.parkingLotName" label="停车场" width="280">
+                  <el-table-column prop="parkingLot.parkingLotName" label="停车场" width="250">
                   </el-table-column>
-                  <el-table-column prop="parkArea" label="车位面积" width="180">
+                  <el-table-column prop="parkArea" label="车位面积" width="150">
                   </el-table-column>
-                  <el-table-column prop="parkingType.ptype" label="车位状态" width="180">
+                  <el-table-column prop="parkingType.ptype" label="车位状态" width="150">
                   </el-table-column>
-                  <el-table-column prop="ownersInfo.owName" label="业主" width="180">
+                  <el-table-column prop="ownersInfo.owName" label="业主" width="150">
                   </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button slot="reference" icon="el-icon-goods" size="mini" type="danger" class="button2"
-                        @click="handlBuy(scope.$index, scope.row)">购买</el-button>
+                        v-if="scope.row.ownersInfo == null" @click="handlBuy(scope.$index, scope.row)">购买</el-button>
                       <el-button slot="primary" icon="el-icon-timer" size="mini" type="success" class="button3"
-                        @click="handleRent(scope.$index, scope.row)">租用</el-button>
-
+                        v-if="scope.row.ownersInfo == null" @click="handleRent(scope.$index, scope.row)">租用</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -123,7 +125,7 @@
         </el-table>
       </div> -->
       <!-- 分页 -->
-      <div>
+      <div v-if="isShowPageAndSearch">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
           :current-page="pageBean.pageNum" :page-sizes="[1, 5, 10, 15, 20]" :page-size="pageBean.pageSize"
           layout="total, sizes, prev, pager, next, jumper" :total="pageBean.total">
@@ -154,15 +156,15 @@
           <!-- 编辑车位信息时，判断车位是否有业主 显示和隐藏 -->
           <el-form-item label="业主姓名" :label-width="formLabelWidth"
             v-if="setParkingInfo.ptypeId == 1 || setParkingInfo.ptypeId == 2">
-            <el-input v-model="setParkingInfo.ownersInfo.owName" autocomplete="off"></el-input>
+            <el-input v-model="ownersInfo.owName" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="联系方式" :label-width="formLabelWidth"
             v-if="setParkingInfo.ptypeId == 1 || setParkingInfo.ptypeId == 2">
-            <el-input v-model="setParkingInfo.ownersInfo.owPhone" autocomplete="off"></el-input>
+            <el-input v-model="ownersInfo.owPhone" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="住址房号" :label-width="formLabelWidth"
             v-if="setParkingInfo.ptypeId == 1 || setParkingInfo.ptypeId == 2">
-            <el-input v-model="setParkingInfo.ownersInfo.id" autocomplete="off"></el-input>
+            <el-input v-model="ownersInfo.id" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -173,7 +175,7 @@
     </div>
     <!-- 车位交易模态框 -->
     <div>
-      <el-dialog :title="title" :visible.sync="dialogFormVisible1" @close="closeDialog" fullscreen >
+      <el-dialog :title="tradeTitle" :visible.sync="dialogFormVisible1" @close="closeDialog">
         <el-form :model="setParkingInfo" :rules="rules" ref="ruleForm">
           <el-form-item label="车位编号" :label-width="formLabelWidth" prop="parkNo">
             <el-input v-model="setParkingInfo.parkNo" autocomplete="off"></el-input>
@@ -181,29 +183,48 @@
           <el-form-item label="车位面积" :label-width="formLabelWidth">
             <el-input v-model="setParkingInfo.parkArea" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="购买方式" :label-width="formLabelWidth">
+          <!-- <el-form-item label="交易内容" :label-width="formLabelWidth">
             <el-select v-model="setParkingInfo.ptypeId" placeholder="购买方式">
-              <el-option label="已售" value="1"></el-option>
-              <el-option label="出租" value="2"></el-option>
+              <el-option label="购买" value="1"></el-option>
+              <el-option label="租用" value="2"></el-option>
             </el-select>
+          </el-form-item> -->
+          <template v-if="tradeTitle == '车位购买'" :label-width="formLabelWidth" label="车位产权">
+            <el-radio v-model="expireTime" label="20">无产权车位20年</el-radio>
+            <el-radio v-model="expireTime" label="70">有产权车位70年</el-radio>
+          </template>
+          <el-form-item label="车位价格" :label-width="formLabelWidth">
+            <el-input v-model="parkingPrice" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="租期" :label-width="formLabelWidth" v-if="tradeTitle == '车位租赁'">最长三年36个月
+            <el-input-number v-model="rentMonth" controls-position="right" @change="handleChangeRentMonth" :min="1"
+              :max="36">
+            </el-input-number>
           </el-form-item>
           <!-- 编辑车位信息时，判断车位是否有业主 显示和隐藏 -->
-          <el-form-item label="业主姓名" :label-width="formLabelWidth"
-            v-if="setParkingInfo.ptypeId == 1 || setParkingInfo.ptypeId == 2">
-            <el-input v-model="setParkingInfo.ownersInfo.owName" autocomplete="off"></el-input>
+          <el-form-item label="业主姓名" :label-width="formLabelWidth">
+            <el-input v-model="ownersInfo.owName" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="联系方式" :label-width="formLabelWidth"
-            v-if="setParkingInfo.ptypeId == 1 || setParkingInfo.ptypeId == 2">
-            <el-input v-model="setParkingInfo.ownersInfo.owPhone" autocomplete="off"></el-input>
+          <el-form-item label="联系方式" :label-width="formLabelWidth">
+            <el-input v-model="ownersInfo.owPhone" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="住址房号" :label-width="formLabelWidth"
-            v-if="setParkingInfo.ptypeId == 1 || setParkingInfo.ptypeId == 2">
-            <el-input v-model="setParkingInfo.ownersInfo.id" autocomplete="off"></el-input>
+          <el-form-item label="住址房号" :label-width="formLabelWidth">
+            <el-input v-model="ownersInfo.id" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="支付方式" :label-width="formLabelWidth">
+            <el-select v-model="payType" placeholder="支付方式">
+              <el-option label="银联" value="银联"></el-option>
+              <el-option label="微信" value="微信"></el-option>
+              <el-option label="支付宝" value="支付宝"></el-option>
+              <el-option label="现金" value="现金"></el-option>
+            </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible1 = false">取 消</el-button>
-          <el-button v-if="setParkingInfo.ptypeId!=null" type="primary" @click="mofifytParkingInfoTrade('ruleForm')">确 定</el-button>
+          <el-button v-if="setParkingInfo.ptypeId != null" type="primary" @click="mofifytParkingInfoTrade('ruleForm')">
+            确定
+          </el-button>
         </div>
       </el-dialog>
     </div>
@@ -222,11 +243,22 @@ export default {
       parkingLot: {},   //停车场信息
       tabPosition: 'left',
       title: '',        //编辑模态框标题
-      tradeTitle:'',    //交易模态框标题
+      tradeTitle: '',    //交易模态框标题
       dialogFormVisible: false, //是否显示模态框
       dialogFormVisible1: false, //购买页面的模态框
       //fullscreen: true,   //模态框是否为全屏 Dialog
-      ownersInfo: {},      //用户信息
+      isShowPageAndSearch: false,
+      name: '',
+      activeName: "first",  //设置el-tab-pane默认位置 
+      parkingPrice: '',   //车位购买价格
+      rentMonth: 1,
+      payType: '',       //支付方式
+      expireTime: '',
+      //用户信息
+      ownersInfo: {
+        owName: ""
+      },
+      setOwnersInfo: {},
       parkingInfo: {
         //存放车位信息
         ptypeId: "",
@@ -290,7 +322,7 @@ export default {
           console.log(this.pageBean);
         });
     },
-    //停车场信息查询
+    //停车场信息查询arkingPrice
     getRealtimeParkingInfo() {
       this.$axios.get("http://localhost:8080/getRealParkingInfo")
         .then((resp) => {
@@ -338,6 +370,14 @@ export default {
     handleEdit(index, row) {
       this.title = "信息编辑";
       this.setParkingInfo = { ...row };
+      //判断ownersInfo是否为null
+      if (this.setParkingInfo.ownersInfo == null) {
+        this.ownersInfo.owName = "无";
+        this.ownersInfo.owPhone = "无";
+        this.ownersInfo.id = 0;
+      } else {
+        this.ownersInfo = this.setParkingInfo.ownersInfo;
+      }
       console.log("handleEdit=row=" + this.setParkingInfo.parkId);
       this.dialogFormVisible = true;
     },
@@ -367,93 +407,116 @@ export default {
           });
         });
     },
+    //车位交易价格计算  a和b表示要计算的两个参数
+    calculateParkingPrice(a, b) {
+      this.parkingPrice = a * b;
+    },
     handlBuy(index, row) {
       this.tradeTitle = "车位购买";
       this.setParkingInfo = { ...row };
       console.log(row);
+      this.setParkingInfo.ptypeId = 1;    //状体1表示购买
+      this.calculateParkingPrice(this.setParkingInfo.parkArea, 8000);//8000每平米
       this.dialogFormVisible1 = true;
-      this.fullscreen=true;
+      //this.fullscreen = true;  //模态框全屏
     },
     handleRent(index, row) {
       this.tradeTitle = "车位租赁";
       this.setParkingInfo = { ...row };
-      console.log(row);
+      this.setParkingInfo.ptypeId = 2;
+      this.calculateParkingPrice(this.rentMonth, 300);//300每月
+
       this.dialogFormVisible1 = true;
     },
 
     //模态框中方法
     mofifytParkingInfo(formName) {
       this.$refs[formName].validate((valid) => {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            if (this.title == "信息编辑") {
-              //编辑中的确定提交
-              this.dialogFormVisible = false;
-              console.log("信息编辑" + this.setParkingInfo);
-              //没有传到后端，格式可能有问题
-              this.$axios
-                .put("http://localhost:8080/changeParkingInfo", this.setParkingInfo)
-                .then((resp) => {
-                  this.$message("修改成功");
-                  this.getParkingInfoByPage;
-                  //this.dialogFormVisible = true;
-                });
-            } else {
-              //执行添加请求
-              this.$axios
-                .post("http://localhost:8080/addParkingInfo", this.setParkingInfo)
-                .then((resp) => {
-                  console.log("添加车位信息=" + this.setParkingInfo);
-                  this.$message("添加成功");
-                  this.getParkingInfoByPage;
-                });
-            }
+        if (valid) {
+          this.setParkingInfo.ownersInfo = this.ownersInfo;
+          console.log(this.setParkingInfo);
+          if (this.title == "信息编辑") {
+            //编辑中的确定提交
+            this.dialogFormVisible = false;
+            console.log("信息编辑" + this.setParkingInfo);
+            //没有传到后端，格式可能有问题
+            this.$axios
+              .put("http://localhost:8080/changeParkingInfo", this.setParkingInfo)
+              .then((resp) => {
+                this.$message("修改成功");
+                this.getParkingInfoByPage;
+                //this.dialogFormVisible = true;
+              });
           } else {
-            this.$message("操作失败");
-            return false;
+            //执行添加请求
+            this.$axios
+              .post("http://localhost:8080/addParkingInfo", this.setParkingInfo)
+              .then((resp) => {
+                console.log("添加车位信息=" + this.setParkingInfo);
+                this.$message("添加成功");
+                this.getParkingInfoByPage;
+              });
           }
-        });
+        } else {
+          this.$message("操作失败");
+          return false;
+        }
       });
     },
     mofifytParkingInfoTrade(formName) {
       this.$refs[formName].validate((valid) => {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            if (this.tradeTitle == "车位购买") {
-              //编辑中的确定提交
-              this.dialogFormVisible = false;
-              console.log("信息编辑" + this.setParkingInfo);
-              //没有传到后端，格式可能有问题
-              this.$axios
-                .put("http://localhost:8080/changeParkingInfo", this.setParkingInfo)
-                .then((resp) => {
-                  this.$message("修改成功");
-                  this.getParkingInfoByPage;
-                  //this.dialogFormVisible = true;
-                });
-            } else {
-              //执行添加请求
-              this.$axios
-                .post("http://localhost:8080/addParkingInfo", this.setParkingInfo)
-                .then((resp) => {
-                  console.log("添加车位信息=" + this.setParkingInfo);
-                  this.$message("添加成功");
-                  this.getParkingInfoByPage;
-                });
-            }
+        if (valid) {
+          console.log("车位交易");
+          this.setParkingInfo.ownersInfo = this.ownersInfo;
+          console.log(this.setParkingInfo);
+          if (this.tradeTitle == "车位购买") {
+            //编辑中的确定提交
+            this.dialogFormVisible = false;
+            console.log("信息编辑" + this.setParkingInfo);
+            //没有传到后端，格式可能有问题
+            this.$axios
+              .post("http://localhost:8080/buyParking/" + this.payType, this.setParkingInfo, this.parkingPrice, this.expireTime)
+              .then((resp) => {
+                this.$message("修改成功");
+                this.getParkingInfoByPage;
+              });
           } else {
-            this.$message("操作失败");
-            return false;
+            //执行添加请求
+            this.$axios
+              .post("http://localhost:8080/addParkingInfo/" + payType, this.setParkingInfo, this.parkingRentPrice, this.expireTime)
+              .then((resp) => {
+                console.log("添加车位信息=" + this.setParkingInfo);
+                this.$message("添加成功");
+                this.getParkingInfoByPage;
+              });
           }
-        });
+        } else {
+          this.$message("操作失败");
+          return false;
+        }
       });
     },
     closeDialog() {
       //模态框关闭时，清空dialog表单数据，验证信息清空
-      this.setStudent = {};
+      this.setParkingInfo = {};
       this.$refs["ruleForm"].clearValidate();
     },
-  },
+    showPageAndSearch(tab, event) {
+      // console.log(tab, event);
+      // alert(tab.index);
+      if (tab.index == 0) {
+        this.isShowPageAndSearch = false;
+      } else {
+        this.isShowPageAndSearch = true;
+      }
+    },
+    handleChangeRentMonth(value) {
+      this.calculateParkingPrice(this.rentMonth, 300)
+      this.expireTime = this.rentMonth;
+      console.log("租用时间");
+      console.log(this.expireTime);
+    },
+  }
 };
 </script>
 

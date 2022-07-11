@@ -165,9 +165,9 @@
     <!-- 车位交易模态框 -->
     <div>
       <el-dialog :title="tradeTitle" :visible.sync="dialogFormVisible1" @close="closeDialog1">
-        <el-form :model="setParkingInfo" :rules="rules" ref="ruleForm">
+        <el-form :model="setParkingInfo" :rules="rules1" ref="ruleForm1">
           <el-form-item label="车位编号" :label-width="formLabelWidth" prop="parkNo">
-            <el-input v-model="setParkingInfo.parkNo" autocomplete="off"></el-input>
+            <el-input v-model="setParkingInfo.parkNumber" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="车位面积" :label-width="formLabelWidth">
             <el-input v-model="setParkingInfo.parkArea" autocomplete="off"></el-input>
@@ -189,13 +189,13 @@
           </el-form-item>
           <!-- 编辑车位信息时，判断车位是否有业主 显示和隐藏 -->
           <el-form-item label="业主姓名" :label-width="formLabelWidth" prop="owName">
-            <el-input v-model="ownersInfo.owName" autocomplete="off"></el-input>
+            <el-input v-model="ownersInfo.name" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="联系方式" :label-width="formLabelWidth" prop="owPhone">
-            <el-input v-model="ownersInfo.owPhone" autocomplete="off"></el-input>
+            <el-input v-model="ownersInfo.telephone" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="住址房号" :label-width="formLabelWidth">
-            <el-input v-model="ownersInfo.id" autocomplete="off"></el-input>
+            <el-input v-model="ownersInfo.house.id" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="支付方式" :label-width="formLabelWidth">
             <el-select v-model="payType" placeholder="支付方式">
@@ -286,7 +286,9 @@ export default {
         rentMonth: "",
         owName: "",
         owPhone: "",
-      }, //交易
+      }, 
+      ruleForm1:{},//交易
+      rules1:{},
       rules: {
         //验证格式
         parkNo: [
@@ -468,7 +470,6 @@ export default {
       this.setParkingInfo = { ...row };
       this.setParkingInfo.parkingType.id = 2;
       this.calculateParkingPrice(this.rentMonth, 300); //300每月
-
       this.dialogFormVisible1 = true;
     },
 
@@ -492,7 +493,7 @@ export default {
               .then((resp) => {
                 this.$message("修改成功");
                 this.getParkingInfoByPage();
-                //this.dialogFormVisible = true;
+                this.dialogFormVisible = false;
               });
           } else {
             //执行添加请求
@@ -502,6 +503,7 @@ export default {
                 console.log("添加车位信息=" + this.setParkingInfo);
                 this.$message("添加成功");
                 this.getParkingInfoByPage();
+                this.dialogFormVisible = false;
               });
           }
         } else {
@@ -518,7 +520,6 @@ export default {
           console.log(this.setParkingInfo);
           if (this.tradeTitle == "车位购买") {
             //编辑中的确定提交
-            this.dialogFormVisible = false;
             console.log("信息编辑" + this.setParkingInfo);
             //统一一个请求对象
             this.parkingBusiness.parkingInfo = this.setParkingInfo;
@@ -529,16 +530,17 @@ export default {
             console.log(this.parkingBusiness);
             //没有传到后端，格式可能有问题
             this.$axios
-              .post("http://localhost:8080/", this.parkingBusiness)
+              .post("http://localhost:8080/buyParking", this.parkingBusiness)
               .then((resp) => {
                 this.$message("修改成功");
                 this.getParkingInfoByPage;
+                this.dialogFormVisible = false;
               });
           } else {
             //执行添加请求
             this.$axios
               .post(
-                "http://localhost:8080/addParkingInfo/",
+                "http://localhost:8080/buyParking/",
                 this.parkingBusiness
               )
               .then((resp) => {
@@ -554,6 +556,7 @@ export default {
         }
       });
     },
+     //编辑模态框的---X按钮点击事件
     closeDialog() {
       //模态框关闭时，清空dialog表单数据，验证信息清空
       this.setParkingInfo = {
@@ -567,24 +570,41 @@ export default {
           id: "",
         },
       };
-      this.ownersInfo = {};
+      this.ownersInfo = {
+        house:{},
+      };
       this.$refs["ruleForm"].clearValidate();
-    },
-    CloseDialogFormVisible() {
       this.dialogFormVisible = false;
+    },
+    //编辑模态框的---取消按钮点击事件
+    CloseDialogFormVisible() {
+     // this.dialogFormVisible = false;
       this.closeDialog();
     },
     //交易模态框的---X按钮
     closeDialog1() {
       //模态框关闭时，清空dialog表单数据，验证信息清空
-      this.ownersInfo = {};
-      this.setParkingInfo = {};
-
+     this.setParkingInfo = {
+        parkingLot: {
+          id: "",
+        },
+        parkingType: {
+          id: "",
+          name:"",
+        },
+        ownersInfo: {
+          id: "",
+        },
+      };
+      this.ownersInfo = {
+        house:{},
+      };
       this.$refs["ruleForm1"].clearValidate();
+      this.dialogFormVisible1 = false;
     },
     //交易模态框的---取消按钮点击事件
     CloseDialogFormVisible1() {
-      this.dialogFormVisible1 = false;
+      //this.dialogFormVisible1 = false;
       this.closeDialog1();
     },
     showPageAndSearch(tab, event) {

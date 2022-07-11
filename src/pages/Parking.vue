@@ -160,9 +160,12 @@
                   </el-table-column>
                   <el-table-column prop="orderEndTime" label="有效期" width="200">
                   </el-table-column>
+                  <el-table-column prop="orderState" :formatter="orderStateFormat" label="订单状态" width="150">  
+                  </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button slot="reference" icon="el-icon-edit" size="mini" type="primary" class="button1" v-if="scope.row.orderState == 1" @click="handlEditOrder(scope.$index, scope.row)">编辑</el-button>
+                      <el-button slot="primary" icon="el-icon-delete" size="mini" type="danger" class="button4" @click="handleNOState(scope.$index, scope.row)">除权</el-button>
                       <el-button slot="primary" icon="el-icon-delete" size="mini" type="danger" class="button2" @click="handleRemovOrder(scope.$index, scope.row)">删除</el-button>
                     </template>
                   </el-table-column>
@@ -598,16 +601,18 @@ export default {
       // console.log("订单编辑"+this.parkingOrderList);
       this.dialogFormVisible2 = true;
     },
-    //订单删除
-    handleRemovOrder(index, row) {
+    //订单状态置0  失效
+    handleNOState(index, row){
+       console.log(row.orderId);
       this.$confirm("确定删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
+          
           this.$axios
-            .delete("http://localhost:8080/deleteParkingOrder/" + row.id)
+            .delete("http://localhost:8080/deleteParkingOrderState/" + row.orderId)
             .then((resp) => {
               this.$message({
                 type: "success",
@@ -622,6 +627,41 @@ export default {
             message: "已取消删除",
           });
         });
+    },
+    //订单删除--真删除
+    handleRemovOrder(index, row) {
+      console.log(row.orderId);
+      this.$confirm("确定删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          
+          this.$axios
+            .delete("http://localhost:8080/deleteParkingOrder/" + row.orderId)
+            .then((resp) => {
+              this.$message({
+                type: "success",
+                message: "删除成功!",
+              });
+              this.getParkingOrderList();
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    //订单状态返回值
+    orderStateFormat(row,column){
+      if(row.orderState==1){
+        return '有效'
+      }else{
+        return '失效'
+      }
     },
 
     //模态框中方法
@@ -798,11 +838,12 @@ export default {
         this.isShowPageSearch = false;
       } else {
         this.isShowPageAndSearch = true;
-        this.isShowPageSearch = false;
+        this.isShowPageSearch = true;
       }
       if (tab.index == 3) {
         this.isShowPageAndSearch = false;
         this.isShowOrderPageSearch = true;
+        this.isShowPageSearch=true;
         this.getParkingOrderList();
       } else {
         this.isShowOrderPageSearch = false;
@@ -847,6 +888,11 @@ export default {
 .button3 {
   background: #20b2aa;
   border-color: #20b2aa;
+  color: #fff;
+}
+.button4 {
+  background: #f1ee0f;
+  border-color: #d9e668;
   color: #fff;
 }
 /* 订单详情下拉信息 */

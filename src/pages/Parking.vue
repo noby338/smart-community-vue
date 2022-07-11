@@ -342,6 +342,7 @@ export default {
       ownersInfo: {
         id: null,
         name: "",
+        telephone:null,
         house: {
           id: null,
         },

@@ -134,7 +134,7 @@
                     </span>
                   </el-menu-item>
                 </router-link>
-                <router-link class="list-group-item" to="/parking">
+                <router-link class="list-group-item" to="/car">
                   <el-menu-item index="5-2">
                     <span slot="title">
                       车辆管理

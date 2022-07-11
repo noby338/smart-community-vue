@@ -8,7 +8,7 @@
                     <h2>登录</h2>
 
                         <el-form-item prop="username" label="用户名:">
-                            <el-input v-model="loginForm.username" prefix-icon="iconfo6nt icondenglu"
+                            <el-input v-model="loginForm.loginName" prefix-icon="iconfo6nt icondenglu"
                                 placeholder="请输入用户名">
                             </el-input>
                         </el-form-item>
@@ -18,6 +18,7 @@
                                 type="password">
                             </el-input>
                         </el-form-item>
+                        <el-checkbox class="remember" v-model="rememberpwd">{{rememberpwd}}</el-checkbox>
                         <el-button type="" @click="resetLoginForm">重 置</el-button>
                         <el-button type="primary" @click="login">登 录</el-button>
 
@@ -30,15 +31,31 @@
 </template>
 
 <script>
+import { setCookie, getCookie, delCookie } from '../utils/util'
 export default {
     data() {
         return {
+        
+            //定义loading默认为false
+      logining: false,
+      // 记住密码
+      rememberpwd: false,
             loginForm: {
-                username: "",
-                password: "",
+                loginName: "",
+                age: '',
+        gender: '',
+        id:'',
+        loginName: '',
+        name:'',
+        password: '',
+        state: '',
+        tellphone:'',
+        addOrEdit:'',
+        token: localStorage.getItem('logintoken'),
+
             },
             loginRules: {
-                username: [
+                loginName: [
                     { required: true, message: "请输入用户名", trigger: "blur" },
                     { min: 2, max: 8, message: "长度在 2 到 8 个字符", trigger: "blur" },
                 ],
@@ -50,6 +67,14 @@ export default {
         };
     },
     methods: {
+         // 获取用户名密码
+    getuserpwd() {
+      if (getCookie('user') != '' && getCookie('pwd') != '') {
+        this.ruleForm.loginName = getCookie('user')
+        this.ruleForm.password = getCookie('pwd')
+        this.rememberpwd = true
+      }
+    },
         resetLoginForm() {
             //重置函数方法
             this.$refs.loginFormRef.resetFields();
@@ -61,18 +86,37 @@ export default {
         login() {
             this.$refs.loginFormRef.validate((valid) => {
                 if (valid) {
-                    this.$axios.get("http://localhost:8080/login", {
-                        params: {
-                            username: this.loginForm.username,
-                            password: this.loginForm.password
-                        }
-                    }).then(resp => {
+                    this.$axios.post("http://localhost:8080/login", this.loginForm).then(res => {
+                        console.log(res);
+                        this.logining = true
                         // jwt 登录验证
-                        if (resp.data.code === 200) {
-                            // window.localStorage.setItem("token", resp.headers.token);
-                            this.$router.push("/dep");
+                        if (res.data.code === 200) {
+                            // window.localStorage.setItem("token", res.headers.token);
+                            if (this.rememberpwd) {
+                //保存帐号到cookie，有效期7天
+                setCookie('user', this.loginForm.loginName, 7)
+                //保存密码到cookie，有效期7天
+                setCookie('pwd', this.loginForm.password, 7)
+              } else {
+                delCookie('user')
+                delCookie('pwd')
+              }
+
+              //如果请求成功就让他2秒跳转路由
+              setTimeout(() => {
+                this.logining = false
+                // 缓存token
+                localStorage.setItem('Authorization', res.data.data.token)
+                // 缓存用户个人信息
+                console.log(res.data.data);
+                localStorage.setItem('userdata', JSON.stringify(res.data.data))
+                // this.$store.commit('login', 'true')
+                this.$router.push("/home");
+              }, 500)
+              this.logining=true;
                         } else {
-                            this.$message.error("请求错误")
+                            this.logining=false,
+                            this.$message.error("登录失败")
                         }
                         // session 登录验证
                         // if(resp.data.code===200) {

@@ -26,17 +26,23 @@
     <el-table size="small" :data="listData" highlight-current-row v-loading="loading" border element-loading-text="拼命加载中" style="width: 100%;">
       <el-table-column align="center" type="selection" width="60">
       </el-table-column>
-      <el-table-column sortable prop="roleName" label="角色名称" width="300">
+      <el-table-column sortable prop="loginName" label="账号" width="100">
       </el-table-column>
-      <el-table-column sortable prop="roleNo" label="角色代码" width="300">
+      <el-table-column sortable prop="password" label="密码" width="100">
       </el-table-column>
-      <el-table-column sortable prop="editTime" label="修改时间" width="300">
-        <template slot-scope="scope">
-          <div>{{scope.row.editTime|timestampToTime}}</div>
-        </template>
+      <el-table-column sortable prop="name" label="用户名" width="100">
       </el-table-column>
-      <el-table-column sortable prop="editUser" label="修改人" width="300">
+      <el-table-column sortable prop="age" label="年龄" width="100">
       </el-table-column>
+      <el-table-column sortable prop="gender" label="性别" width="100">
+      </el-table-column>
+      <el-table-column sortable prop="tellphone" label="电话" width="100">
+      </el-table-column>
+      <el-table-column sortable prop="state" label="状态" width="100">
+      </el-table-column>
+      <el-table-column sortable prop="roleNo" label="角色" width="100">
+      </el-table-column>
+      
       <el-table-column align="center" label="操作" min-width="300">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -46,18 +52,35 @@
       </el-table-column>
     </el-table>
     <!-- 分页组件 -->
-    <!-- <Pagination v-bind:child-msg="pageparm" @callFather="callFather"></Pagination> -->
+    <Pagination v-bind:child-msg="pageparm" @callFather="callFather"></Pagination>
     <!-- 编辑界面 -->
     <el-dialog :title="title" :visible.sync="editFormVisible" width="30%" @click='closeDialog("edit")'>
       <el-form label-width="120px" :model="editForm" ref="editForm" :rules="rules">
-         <el-form-item label="系统编码" prop="systemNo">
-          <el-input size="small" v-model="editForm.systemNo" auto-complete="off" placeholder="请输入系统编码"></el-input>
-        </el-form-item> -->
-        <el-form-item label="角色名称" prop="roleName">
-          <el-input size="small" v-model="editForm.roleName" auto-complete="off" placeholder="请输入角色名称"></el-input>
+         <el-form-item label="账号" prop="loginName"  v-if="this.editForm.addOrEdit=='add'">
+          <el-input size="small" v-model="editForm.loginName" auto-complete="off" placeholder="请输入用户"></el-input>
+          <!-- <el-input size="small" v-model="editForm.loginName" auto-complete="off" placeholder="请输入用户" v-else disabled></el-input> -->
         </el-form-item>
-        <el-form-item label="角色代码" prop="roleNo">
-          <el-input size="small" v-model="editForm.roleNo" auto-complete="off" placeholder="请输入角色代码"></el-input>
+<el-form-item label="账号" prop="loginName" v-else >
+          <el-input size="small" v-model="editForm.loginName" auto-complete="off" placeholder="请输入用户"  disabled></el-input>
+        </el-form-item>
+
+         <el-form-item label="密码" prop="password">
+          <el-input size="small" v-model="editForm.password" auto-complete="off" placeholder="请输入密码"></el-input>
+        </el-form-item> 
+         <el-form-item label="用户名" prop="password">
+          <el-input size="small" v-model="editForm.name" auto-complete="off" placeholder="请输入用户名"></el-input>
+        </el-form-item> 
+         <el-form-item label="年龄" prop="age" >
+          <el-input size="small" v-model="editForm.age" auto-complete="off" placeholder="请输入年龄"></el-input>
+        </el-form-item>
+         <el-form-item label="性别" prop="gender" >
+          <el-input size="small" v-model="editForm.gender" auto-complete="off" placeholder="请输入性别"></el-input>
+        </el-form-item>
+         <el-form-item label="电话" prop="tellphone">
+          <el-input size="small" v-model="editForm.tellphone" auto-complete="off" placeholder="请输入电话"></el-input>
+        </el-form-item>
+        <el-form-item label="状态" prop="state">
+          <el-input size="small" v-model="editForm.state" auto-complete="off" placeholder="请输入状态"></el-input>
         </el-form-item> 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -86,7 +109,7 @@
 //   RoleRightTree,
 //   RoleRightSave
 // } from '../../api/userMG'
-// import Pagination from '../../components/Pagination'
+import Pagination from '../pages/Pagination'
 export default {
   data() {
     return {
@@ -97,11 +120,16 @@ export default {
       menuAccessshow: false, //控制数据权限显示与隐藏
       title: '添加',
       editForm: {
-        roleId: '',
-        systemNo: '',
-        roleNo: '',
-        roleName: '',
-        token: localStorage.getItem('logintoken')
+        age: '',
+        gender: '',
+        id:'',
+        loginName: '',
+        name:'',
+        password: '',
+        state: '',
+        tellphone:'',
+        addOrEdit:'',
+        token: localStorage.getItem('Authorization')
       },
       // rules 表单验证
       rules: {
@@ -142,14 +170,14 @@ export default {
       // 分页参数
       pageparm: {
         currentPage: 1,
-        pageSize: 10,
-        total: 10
+        pageSize: 5,
+        total: ""
       }
     }
   },
   // 注册组件
   components: {
-    // Pagination
+    Pagination
   },
   /**
    * 数据发生改变
@@ -177,76 +205,35 @@ export default {
         code: 0,
         msg: null,
         count: 6,
-        data: [
-          {
-            addUser: 'root',
-            editUser: 'root',
-            addTime: 1519182004000,
-            editTime: 1520288426000,
-            roleId: 1,
-            systemNo: 'pmd',
-            roleNo: 'Administrator',
-            roleName: '超级管理员'
-          },
-          {
-            addUser: null,
-            editUser: null,
-            addTime: 1521111376000,
-            editTime: 1520678191000,
-            roleId: 2,
-            systemNo: 'order',
-            roleNo: 'admin',
-            roleName: '公司管理员'
-          },
-          {
-            addUser: null,
-            editUser: null,
-            addTime: 1520678221000,
-            editTime: 1520678221000,
-            roleId: 95,
-            systemNo: 'pm',
-            roleNo: 'common',
-            roleName: '普通用户'
-          },
-          {
-            addUser: null,
-            editUser: null,
-            addTime: 1526349853000,
-            editTime: 1526349853000,
-            roleId: 96,
-            systemNo: '1',
-            roleNo: '1',
-            roleName: '1'
-          },
-          {
-            addUser: null,
-            editUser: null,
-            addTime: 1526349942000,
-            editTime: 1526437443000,
-            roleId: 97,
-            systemNo: '2',
-            roleNo: '2',
-            roleName: '2'
-          },
-          {
-            addUser: null,
-            editUser: null,
-            addTime: 1526652148000,
-            editTime: 1526652148000,
-            roleId: 101,
-            systemNo: 'test',
-            roleNo: 'demo',
-            roleName: '演示角色'
-          }
-        ]
+        data: []
       }
       this.loading = false
-      this.listData = res.data
+    //   this.listData = res.data
       // 分页赋值
       this.pageparm.currentPage = this.formInline.page
       this.pageparm.pageSize = this.formInline.limit
-      this.pageparm.total = res.count
+      this.pageparm.total = res.data.total
       // 模拟数据结束
+
+      this.$axios.get('http://localhost:8080/user/findAll/'+this.pageparm.currentPage+'/'+this.pageparm.pageSize,
+      ).then(res=>{
+        this.loading=false
+        // console.log(res);
+        if(res.data.code==200){
+             this.listData = res.data.data.list;
+        //    console.log(this.listData);
+           this.$message({
+              type: 'info',
+              message: res.data.msg
+            })
+           
+        }else{
+             this.$message({
+              type: 'error',
+              message: res.data.msg
+            })
+        }
+      }).catch()
 
       /***
        * 调用接口，注释上面模拟数据 取消下面注释
@@ -285,46 +272,70 @@ export default {
     //显示编辑界面
     handleEdit: function(index, row) {
       this.editFormVisible = true
-      if (row != undefined && row != 'undefined') {
+        if (row != undefined && row != 'undefined') {
         this.title = '修改'
-        this.editForm.roleId = row.roleId
-        this.editForm.systemNo = row.systemNo
-        this.editForm.roleNo = row.roleNo
-        this.editForm.roleName = row.roleName
+        this.editForm.age = row.age
+        this.editForm.gender = row.gender
+        this.editForm.loginName = row.loginName
+        this.editForm.password = row.password
+        this.editForm.state = row.state
+        this.editForm.name = row.name
+        this.editForm.tellphone = row.tellphone
+        this.editForm.addOrEdit='edit'
       } else {
         this.title = '添加'
-        this.editForm.roleId = ''
-        this.editForm.systemNo = ''
-        this.editForm.roleNo = ''
-        this.editForm.roleName = ''
+         this.editForm.age = ''
+        this.editForm.gender = ''
+        this.editForm.loginName = ''
+        this.editForm.password = ''
+        this.editForm.state = ''
+        this.editForm.name = ''
+        this.editForm.tellphone = ''
+        this.editForm.addOrEdit='add'
       }
     },
     // 编辑、增加页面保存方法
     submitForm(editData) {
       this.$refs[editData].validate(valid => {
         if (valid) {
-          roleSave(this.editForm)
-            .then(res => {
-              this.editFormVisible = false
-              this.loading = false
-              if (res.success) {
-                this.getdata(this.formInline)
-                this.$message({
-                  type: 'success',
-                  message: '角色保存成功！'
+             if(this.editForm.addOrEdit=='edit'){
+                 this.$axios.post("http://localhost:8080/user/update",this.editForm).then(res=>{
+               console.log(res);
+               if(res.data.code == 200){
+                  this.getdata(this.formInline)
+                  this.$message({
+                    type: 'success',
+                    message: '用户修改成功！'
+                  })
+                  this.editFormVisible = false
+                }else{
+                   this.$message({
+                   type: 'info',
+                   message: res.data.msg
                 })
-              } else {
-                this.$message({
-                  type: 'info',
-                  message: res.msg
+                 this.editFormVisible = false
+                }
+             })
+            .catch();
+            }else{
+                 this.$axios.post("http://localhost:8080/user/insert",this.editForm).then(res=>{
+                if(res.data.code == 200){
+                  this.getdata(this.formInline)
+                  this.$message({
+                    type: 'success',
+                    message: '用户添加成功！'
+                  })
+                  this.editFormVisible = false
+                }else{
+                   this.$message({
+                   type: 'info',
+                   message: res.data.msg
                 })
-              }
-            })
-            .catch(err => {
-              this.editFormVisible = false
-              this.loading = false
-              this.$message.error('角色保存失败，请稍后再试！')
-            })
+                 this.editFormVisible = false
+                }
+             })
+            .catch();
+            }
         } else {
           return false
         }
@@ -338,9 +349,9 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          roleDelete(row.roleId)
+            this.$axios.delete("http://localhost:8080/user/delete/"+row.loginName )
             .then(res => {
-              if (res.success) {
+              if (res.data.code==200) {
                 this.$message({
                   type: 'success',
                   message: '角色已删除！'
@@ -349,7 +360,7 @@ export default {
               } else {
                 this.$message({
                   type: 'info',
-                  message: res.msg
+                  message: res.data.msg
                 })
               }
             })
@@ -359,10 +370,7 @@ export default {
             })
         })
         .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+          
         })
     },
     // 数据权限

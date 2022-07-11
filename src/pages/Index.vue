@@ -10,112 +10,20 @@
     </el-header>
 
     <el-container>
-      <el-aside width="180px">
+      <el-aside width="180px" >
         <el-row class="tac">
           <el-col :span="24">
-            <el-menu default-active="" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
-              <!-- <el-submenu index="1">
-                <template slot="title">
-                  <i class="el-icon-location"></i>
-                  <span>导航一</span>
-                </template>
-                <el-menu-item-group>
-                  <template slot="title">分组一</template>
-                  <el-menu-item index="1-1">选项1</el-menu-item>
-                  <el-menu-item index="1-2">选项2</el-menu-item>
-                </el-menu-item-group>
-                <el-menu-item-group title="分组2">
-                  <el-menu-item index="1-3">选项3</el-menu-item>
-                </el-menu-item-group>
-                <el-submenu index="1-4">
-                  <template slot="title">选项4</template>
-                  <el-menu-item index="1-4-1">选项1</el-menu-item>
-                </el-submenu>
-              </el-submenu>
-              <el-menu-item index="2">
-                <i class="el-icon-menu"></i>
-                <span slot="title">导航二</span>
-              </el-menu-item> -->
-
-              <el-submenu index="0">
-                <template slot="title">
-                  <i class="el-icon-location"></i>
-                  <span>例子</span>
-                </template>
-                <router-link class="list-group-item" to="/tableExam">
-                  <el-menu-item index="0-1">
-                    <span slot="title">
-                      统一的表格使用
-                    </span>
-                  </el-menu-item>
-                </router-link>
-                <router-link class="list-group-item" to="/formExam">
-                  <el-menu-item index="0-2">
-                    <span slot="title">
-                      表单的使用
-                    </span>
-                  </el-menu-item>
-                </router-link>
-              </el-submenu>
-              <router-link class="list-group-item" to="/home">
-                <el-menu-item index="1">
-                  <i class="el-icon-s-grid"></i>
-                  <span slot="title">
-                    首页
-                  </span>
-                </el-menu-item>
-              </router-link>
-
-              <el-submenu index="2">
-                <template slot="title">
+            <el-menu default-active="" v-for="(item,index) in listData" :key="index" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+            <el-submenu index=index v-if="item.childMenu.length!=0">
+                <template slot="title" >
                   <i class="el-icon-user"></i>
-                  <span>个人管理</span>
+                  <span>{{item.menuname}}</span>
                 </template>
-                <router-link class="list-group-item" to="/emp">
-                  <el-menu-item index="2-1">
+                 <router-link class="list-group-item" 
+                 v-for="(it,index2) in item.childMenu" :key="index2" :to="it.url">
+                  <el-menu-item index2=index2>
                     <span slot="title">
-                      信息修改
-                    </span>
-                  </el-menu-item>
-                </router-link>
-                <router-link class="list-group-item" to="/empAdd">
-                  <el-menu-item index="2-2">
-                    <span slot="title">
-                      密码修改
-                    </span>
-                  </el-menu-item>
-                </router-link>
-              </el-submenu>
-              <el-submenu index="3">
-                <template slot="title">
-                  <i class="el-icon-location"></i>
-                  <span>房屋和住户</span>
-                </template>
-                <router-link class="list-group-item" to="/emp">
-                  <el-menu-item index="3-1">
-                    <span slot="title">
-                      房屋管理
-                    </span>
-                  </el-menu-item>
-                </router-link>
-                <router-link class="list-group-item" to="/emp">
-                  <el-menu-item index="3-2">
-                    <span slot="title">
-                      住户管理
-                    </span>
-                  </el-menu-item>
-                </router-link>
-               
-              </el-submenu>
-            <el-submenu index="4">
-                <template slot="title">
-                  <i class="el-icon-user"></i>
-                  <span>权限管理</span>
-                </template>
-                 <router-link class="list-group-item" to="/Role">
-                  <el-menu-item index="4-1">
-                    <span slot="title">
-                      角色管理
+                      {{it.menuname}}
                     </span>
                   </el-menu-item>
                 </router-link>
@@ -136,16 +44,56 @@
 </template>
 
 <script>
+
 export default {
+ data() {
+        return {
+            listData:[],
+            localData:{},
+            //定义loading默认为false
+      logining: false,
+      // 记住密码
+      rememberpwd: false,
+            
+        };
+    },
+
   name: "index",
+  created(){this.indexLoad()},
   methods: {
+    indexLoad(){
+        
+    
+this.localData= JSON.parse(window.localStorage.getItem("userdata"));
+
+this.$axios.post('http://localhost:8080/rbacMenu/findAllMenu',this.localData
+      ).then(res=>{
+        // this.loading=false
+        console.log(res);
+        if(res.data.code==200){
+             this.listData = res.data.data;
+           console.log(this.listData);
+           this.$message({
+              type: 'info',
+              message: res.data.msg
+            })
+           
+        }else{
+             this.$message({
+              type: 'error',
+              message: res.data.msg
+            })
+        }
+      }).catch()
+    },
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     }
-  }
+  },
+ 
 }
 </script>
 

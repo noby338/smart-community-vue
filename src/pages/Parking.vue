@@ -4,7 +4,7 @@
       <h2>{{ parkingLot.name }}信息管理</h2>
     </div>
     <div class="parkingInfo">
-      <!-- 条件查询 -->
+      <!-- 条件查询 v-if="isShowPageAndSearch" -->
       <div v-if="isShowPageAndSearch">
         <el-form ref="parkingInfo" :inline="true" :model="parkingInfo" class="demo-form-inline">
           <el-form-item label="车位编号">
@@ -24,6 +24,36 @@
           <el-form-item>
             <el-button type="primary" @click="searchParkingInfo">查询</el-button>
             <el-button type="primary" @click="insertParkingInfo">添加车位</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- 订单条件查询 v-if="isShowOrderPageSearch" -->
+      <div v-if="isShowOrderPageSearch">
+        <el-form ref="parkingOrderList" :inline="true" :model="parkingOrderList" class="demo-form-inline">
+          <el-form-item label="订单状态">
+            <el-select v-model="parkingOrderList.orderState" placeholder="车位状态">
+              <el-option label="订单状态" value="null"></el-option>
+              <el-option label="有效" value="1"></el-option>
+              <el-option label="失效" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- <el-form-item label="模板交易时间">
+            <el-col :span="11">
+              <el-date-picker type="datetime" placeholder="选择日期" v-model="parkingOrderList.orderTime" style="width: 100%;"></el-date-picker>
+            </el-col>
+          </el-form-item> -->
+          <el-form-item label="交易时间">
+            <el-col :span="11">
+              <el-date-picker type="datetime" placeholder="选择日期" v-model="parkingOrderList.orderTime" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="到期时间">
+            <el-col :span="11">
+              <el-date-picker type="datetime" placeholder="选择日期" v-model="parkingOrderList.orderEndTime" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+            </el-col>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="searchParkingOrderList">查询</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -87,39 +117,60 @@
                 </el-table>
               </div>
             </el-tab-pane>
+            <el-tab-pane label="交易记录" name="fourth">
+              <div>
+                <el-table :data="pageBean2.list" style="width: 100%" height="500" :row-class-name="orderTableRowStyle">
+                  <el-table-column type="expand">
+                    <template slot-scope="props">
+                      <el-form label-position="left" inline class="demo-table-expand">
+                        <el-form-item label="订单编号">
+                          <span>{{ props.row.orderNo }}</span>
+                        </el-form-item>
+                        <el-form-item label="业主姓名">
+                          <span>{{ props.row.ownersInfo.name }}</span>
+                        </el-form-item>
+                        <el-form-item label="支付方式">
+                          <span>{{ props.row.payType }}</span>
+                        </el-form-item>
+                        <el-form-item label="业主电话">
+                          <span>{{ props.row.ownersInfo.telephone }}</span>
+                        </el-form-item>
+                        <el-form-item label="备注">
+                          <span>{{ props.row.ordeRemark }}</span>
+                        </el-form-item>
+                        <el-form-item label="业主住址">
+                          <span>{{ props.row.ownersInfo.house }}</span>
+                        </el-form-item>
+                      </el-form>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="parkingInfo.parkNumber" label="停车场编号" width="150">
+                  </el-table-column>
+                  <el-table-column prop="parkingInfo.parkArea" label="车位面积" width="100">
+                  </el-table-column>
+                  <el-table-column prop="parkingType.name" label="订单类型" width="150">
+                  </el-table-column>
+                  <el-table-column prop="orderTime" label="交易时间" width="200">
+                  </el-table-column>
+                  <el-table-column prop="orderEndTime" label="有效期" width="200">
+                  </el-table-column>
+                  <el-table-column prop="orderState" :formatter="orderStateFormat" label="订单状态" width="150">
+                  </el-table-column>
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button slot="reference" icon="el-icon-edit" size="mini" type="primary" class="button1" @click="handlEditOrder(scope.$index, scope.row)">编辑</el-button>
+                      <el-button slot="primary" icon="el-icon-delete" size="mini" type="primary" class="button4" v-if="scope.row.orderState == 1" @click="handleNOState(scope.$index, scope.row)">除权</el-button>
+                      <el-button slot="primary" icon="el-icon-delete" size="mini" type="danger" class="button2" v-if="scope.row.orderState == 0" @click="handleRemovOrder(scope.$index, scope.row)">删除</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </el-tab-pane>
           </el-tabs>
         </template>
       </div>
-      <!-- 车位信息展示 -->
-      <!-- <div>
-        <el-table :data="pageBean.list" style="width: 100%" height="500">
-          <el-table-column el-table-column prop="parkNo" label="车位编号" width="180">
-          </el-table-column>
-          <el-table-column prop="parkingLot.parkingLotName" label="停车场" width="280">
-          </el-table-column>
-          <el-table-column prop="parkArea" label="车位面积" width="180">
-          </el-table-column>
-          <el-table-column prop="parkingType.ptype" label="车位状态" width="180">
-          </el-table-column>
-          <el-table-column prop="ownersInfo.owName" label="业主" width="180">
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" size="mini" class="button1"
-                @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button type="danger" icon="el-icon-delete" size="mini" class="button2"
-                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-              <el-button slot="reference" icon="el-icon-goods" size="mini" type="danger" class="button2"
-                @click="handlBuy(scope.$index, scope.row)">购买</el-button>
-                <el-button slot="primary" icon="el-icon-timer" size="mini" type="success" class="button3"
-                @click="handleRent(scope.$index, scope.row)">租用</el-button>
-
-            </template>
-          </el-table-column>
-        </el-table>
-      </div> -->
       <!-- 分页 -->
-      <div v-if="isShowPageAndSearch">
+      <div v-if="isShowPageSearch">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageBean.pageNum" :page-sizes="[1, 5, 10, 15, 20]" :page-size="pageBean.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageBean.total">
         </el-pagination>
       </div>
@@ -153,7 +204,7 @@
             <el-input v-model="ownersInfo.telephone" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="住址房号" :label-width="formLabelWidth" v-if="setParkingInfo.parkingType.id == 1 || setParkingInfo.parkingType.id == 2">
-            <el-input v-model="ownersInfo.house.id" autocomplete="off"></el-input>
+            <el-cascader v-model="value" :options="options" :props="{ expandTrigger: 'hover' }" @change="handleChangeHouseId"></el-cascader>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -194,8 +245,11 @@
           <el-form-item label="联系方式" :label-width="formLabelWidth" prop="owPhone">
             <el-input v-model="ownersInfo.telephone" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="住址房号" :label-width="formLabelWidth">
+          <!-- <el-form-item label="住址房号" :label-width="formLabelWidth">
             <el-input v-model="ownersInfo.house.id" autocomplete="off"></el-input>
+          </el-form-item> -->
+          <el-form-item label="住址房号" :label-width="formLabelWidth">
+            <el-cascader v-model="value" :options="options" :props="{ expandTrigger: 'hover' }" @change="handleChangeHouseId"></el-cascader>
           </el-form-item>
           <el-form-item label="支付方式" :label-width="formLabelWidth">
             <el-select v-model="payType" placeholder="支付方式">
@@ -214,10 +268,37 @@
         </div>
       </el-dialog>
     </div>
+    <!-- 订单编辑模态框 -->
+    <div>
+      <el-dialog :title="orderTitle" :visible.sync="dialogFormVisible2" @close="closeDialog2">
+        <el-form :model="parkingOrderList" :rules="rules" ref="ruleForm">
+          <el-form-item label="业主姓名" :label-width="formLabelWidth" prop="owName">
+            <el-input v-model="parkingOrderList.ownersInfo.name" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="联系方式" :label-width="formLabelWidth" prop="owPhone">
+            <el-input v-model="parkingOrderList.ownersInfo.telephone" autocomplete="off"></el-input>
+          </el-form-item>
+          <!-- <el-form-item label="住址房号" :label-width="formLabelWidth">
+            <el-input v-model="parkingOrderList.ownersInfo.house.id" autocomplete="off"></el-input>
+          </el-form-item> -->
+          <el-form-item label="订单备注" :label-width="formLabelWidth">
+            <el-input v-model="parkingOrderList.ordeRemark" autocomplete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="CloseDialogFormVisible2">取 消</el-button>
+          <el-button type="primary" @click="mofifytParkingOrder('ruleForm')">
+            确定
+          </el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
+import { resolve } from 'path';
+
 export default {
   data() {
     return {
@@ -228,13 +309,21 @@ export default {
       percentage4: 80, //记录当前车库空余车位
       parkingLot: {}, //停车场信息
       tabPosition: "left",
+      //楼栋住户地址信息--用于多级选择器
+      value: [],
+      options: [
+        ],
 
       title: "", //编辑模态框标题
       tradeTitle: "", //交易模态框标题
+      orderTitle: "", //订单模态框标题
       dialogFormVisible: false, //是否显示模态框(添加和编辑)
       dialogFormVisible1: false, //购买页面的模态框(购买和租赁)
+      dialogFormVisible2: false, // 订单编辑模态框
       //fullscreen: true,   //模态框是否为全屏 Dialog
-      isShowPageAndSearch: false, //是否显示查询栏和分页
+      isShowPageAndSearch: false, //是否显示查询栏
+      isShowPageSearch: false, //是否显示分页栏
+      isShowOrderPageSearch: false, //是否显示订单查询
       name: "",
       activeName: "first", //设置el-tab-pane默认位置
       parkingPrice: "", //车位购买价格
@@ -245,15 +334,52 @@ export default {
         //统一响应对象，给后端车位信息，车主信息等进行交易
         parkingInfo: {},
       },
+      //车位交易订单信息
+      parkingOrderList: {
+        parkingInfo: {
+          parkNumber: "",
+        },
+        ownersInfo: {
+          house: {},
+        },
+        parkingType: {},
+      },
       //用户信息
       ownersInfo: {
         id: null,
         name: "",
-        telephone:null,
+        telephone: null,
         house: {
           id: null,
         },
       },
+      //房间信息----0暂用
+      houseInfo: {},
+      //小区所有房间信息
+      houseBuilding: [
+        {
+          id: "",
+          name: "",
+          houseUnitList: [
+            {
+              id: "",
+              name: "",
+              houseFloorList: [
+                {
+                  id: "",
+                  name: "",
+                  houseList: [
+                    {
+                      id: "",
+                      houseNum: "",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
       //setOwnersInfo: {},
       parkingInfo: {
         //存放车位信息
@@ -272,12 +398,14 @@ export default {
         },
         ownersInfo: {
           id: "",
+          telephone: "",
         },
       },
       //分页设置
       pageIndex: 1,
       pageSize: 10,
       pageBean: "",
+      pageBean2: "", //接收订单数据
       formLabelWidth: "120px",
       setStudent: {},
       ruleForm: {
@@ -287,9 +415,9 @@ export default {
         rentMonth: "",
         owName: "",
         owPhone: "",
-      }, 
-      ruleForm1:{},//交易
-      rules1:{},
+      },
+      ruleForm1: {}, //交易
+      rules1: {},
       rules: {
         //验证格式
         parkNo: [
@@ -325,6 +453,7 @@ export default {
     //页面初始化执行
     this.getParkingInfoByPage();
     this.getRealtimeParkingInfo(); //车库信息
+    this.getHouseInfo();
   },
   methods: {
     //圆形进度条显示
@@ -392,22 +521,93 @@ export default {
           }
         });
     },
+    //分页查询订单信息查询
+    getParkingOrderList() {
+      this.$axios
+        .post(
+          "http://localhost:8080/getParkingOrderListByPage/" +
+            this.pageIndex +
+            "/" +
+            this.pageSize,
+          this.parkingOrderList
+        )
+        .then((resp) => {
+          console.log("车位订单信息");
+          console.log(resp);
+          this.pageBean2 = resp.data.data;
+        });
+    },
+    //用户信息查询-----空
+    getOwnersInfo() {
+      this.$axios
+        .get("http://localhost:8080/getOwnersInfo", this.ownersInfo)
+        .then((resp) => {
+          console.log("用户信息查询");
+          console.log(resp.data);
+        });
+    },
+    //楼栋信息
+    getHouseInfo() {
+      this.$axios
+        .get("http://localhost:8080/house/selectAllHouse", this.houseInfo)
+        .then((resp) => {
+          console.log("楼栋信息");
+          console.log(resp.data.data);
+          this.houseBuilding = resp.data.data;
+          for(var i=0;i<this.houseBuilding.length;i++){
+            //第一层---楼栋
+            let obj={label:this.houseBuilding[i].name,value:this.houseBuilding[0].id,children:[]};
+             for(var j=0;j<this.houseBuilding[i].houseUnitList.length;j++){
+              //alert("j");
+              //第二层---单元
+               let obj1={label:this.houseBuilding[i].houseUnitList[j].name,value:this.houseBuilding[i].houseUnitList[j].name,children:[]};
+               obj.children.push(obj1);
+               //console.log(obj1);
+               for(var k=0;k<this.houseBuilding[i].houseUnitList[j].houseFloorList.length;k++){
+                 //第三层---楼层
+                  //alert(k);
+                  let obj2={label:this.houseBuilding[i].houseUnitList[j].houseFloorList[k].name,value:this.houseBuilding[i].houseUnitList[j].houseFloorList[k].id,children:[]};
+                  obj1.children.push(obj2);
+                  console.log(obj2);
+                  for(var y=0;y<this.houseBuilding[i].houseUnitList[j].houseFloorList[k].houseList.length;y++){
+                    //第四层---房间号
+                    //alert(this.houseBuilding[i].houseUnitList[j].houseFloorList[k].houseList.length);
+                    let obj3={label:this.houseBuilding[i].houseUnitList[j].houseFloorList[k].houseList[y].houseNum,value:this.houseBuilding[i].houseUnitList[j].houseFloorList[k].houseList[y].id};
+                    console.log(obj3);
+                    obj2.children.push(obj3);
+                  }
+               }
+             };
+            this.options.push(obj);
+          }
+          console.log("options");
+          console.log(this.options);
+        });
+    },
     // 分页查询方法
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.pageSize = val;
       this.getParkingInfoByPage();
+      this.getParkingOrderList();
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.pageIndex = val;
       this.getParkingInfoByPage();
+      this.getParkingOrderList();
     },
     //条件查询 ptypeId的写法才能穿过去
     searchParkingInfo() {
       //alert(this.parkingInfo.pTypeId);
       console.log(this.parkingInfo);
       this.getParkingInfoByPage();
+    },
+    //订单条件查询
+    searchParkingOrderList() {
+      console.log("订单条件查询");
+      console.log(this.parkingOrderList);
+      this.getParkingOrderList();
     },
     //添加车位
     insertParkingInfo() {
@@ -418,13 +618,12 @@ export default {
     },
     //编辑车位信息
     handleEdit(index, row) {
-      //alert("进入了");
       this.title = "信息编辑";
       this.setParkingInfo = { ...row };
       if (this.setParkingInfo.ownersInfo != null) {
         this.ownersInfo = this.setParkingInfo.ownersInfo;
       }
-      alert(this.setParkingInfo.parkingType.id);
+      //alert(this.setParkingInfo.parkingType.id);
       this.dialogFormVisible = true;
     },
     //删除车位
@@ -473,6 +672,77 @@ export default {
       this.calculateParkingPrice(this.rentMonth, 300); //300每月
       this.dialogFormVisible1 = true;
     },
+    //订单编辑
+    handlEditOrder(index, row) {
+      this.orderTitle = "订单编辑";
+      this.parkingOrderList = { ...row };
+      console.log(row);
+      // //this.ownersInfo=this.parkingOrderList.ownersInfo;
+      // console.log("订单编辑"+this.parkingOrderList);
+      this.dialogFormVisible2 = true;
+    },
+    //订单状态置0  失效
+    handleNOState(index, row) {
+      console.log(row.orderId);
+      this.$confirm("确定删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$axios
+            .delete(
+              "http://localhost:8080/deleteParkingOrderState/" + row.orderId
+            )
+            .then((resp) => {
+              this.$message({
+                type: "success",
+                message: "删除成功!",
+              });
+              this.getParkingOrderList();
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    //订单删除--真删除
+    handleRemovOrder(index, row) {
+      console.log(row.orderId);
+      this.$confirm("确定删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$axios
+            .delete("http://localhost:8080/deleteParkingOrder/" + row.orderId)
+            .then((resp) => {
+              this.$message({
+                type: "success",
+                message: "删除成功!",
+              });
+              this.getParkingOrderList();
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    //订单状态返回值
+    orderStateFormat(row, column) {
+      if (row.orderState == 1) {
+        return "有效";
+      } else {
+        return "失效";
+      }
+    },
 
     //模态框中方法
     //添加车位信息输入后确认执行
@@ -519,7 +789,7 @@ export default {
           console.log("车位交易");
           this.setParkingInfo.ownersInfo = this.ownersInfo;
           console.log(this.setParkingInfo);
-          if (this.tradeTitle == "车位购买") {
+          
             //编辑中的确定提交
             console.log("信息编辑" + this.setParkingInfo);
             //统一一个请求对象
@@ -533,31 +803,35 @@ export default {
             this.$axios
               .post("http://localhost:8080/buyParking", this.parkingBusiness)
               .then((resp) => {
-                this.$message("修改成功");
-                this.getParkingInfoByPage;
-                this.dialogFormVisible = false;
-              });
-          } else {
-            //执行添加请求
-            this.$axios
-              .post(
-                "http://localhost:8080/buyParking/",
-                this.parkingBusiness
-              )
-              .then((resp) => {
-                console.log("添加车位信息=" + this.setParkingInfo);
-                this.$message("添加成功");
+                this.$message("购买成功");
                 this.getParkingInfoByPage();
                 this.dialogFormVisible1 = false;
               });
-          }
         } else {
           this.$message("操作失败");
           return false;
         }
       });
     },
-     //编辑模态框的---X按钮点击事件
+    mofifytParkingOrder(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          //修改订单信息
+          console.log(this.parkingOrderList);
+          this.$axios
+            .put("http://localhost:8080/setParkingOrder", this.parkingOrderList)
+            .then((resp) => {
+              this.$message("修改成功");
+              this.dialogFormVisible2 = false;
+              this.closeDialog2();
+            });
+        } else {
+          this.$message("操作失败");
+          return false;
+        }
+      });
+    },
+    //编辑模态框的---X按钮点击事件
     closeDialog() {
       //模态框关闭时，清空dialog表单数据，验证信息清空
       this.setParkingInfo = {
@@ -572,34 +846,37 @@ export default {
         },
       };
       this.ownersInfo = {
-        house:{},
+        house: {},
       };
+      this.value={},
       this.$refs["ruleForm"].clearValidate();
       this.dialogFormVisible = false;
     },
     //编辑模态框的---取消按钮点击事件
     CloseDialogFormVisible() {
-     // this.dialogFormVisible = false;
+      // this.dialogFormVisible = false;
       this.closeDialog();
     },
     //交易模态框的---X按钮
     closeDialog1() {
       //模态框关闭时，清空dialog表单数据，验证信息清空
-     this.setParkingInfo = {
+      this.setParkingInfo = {
         parkingLot: {
           id: "",
         },
         parkingType: {
           id: "",
-          name:"",
+          name: "",
         },
         ownersInfo: {
           id: "",
         },
       };
       this.ownersInfo = {
-        house:{},
+        house: {},
       };
+      this.value={},
+      this.parkingBusiness={},
       this.$refs["ruleForm1"].clearValidate();
       this.dialogFormVisible1 = false;
     },
@@ -608,20 +885,66 @@ export default {
       //this.dialogFormVisible1 = false;
       this.closeDialog1();
     },
+    //订单模态框--X按钮
+    closeDialog2() {
+      this.parkingOrderList = {
+        ownersInfo: {},
+        parkingInfo: {},
+        parkingType: {},
+      };
+      this.$refs["ruleForm"].clearValidate();
+      //更改后直接分页查询会将订单信息带到 后端
+      this.getParkingOrderList();
+      this.dialogFormVisible2 = false;
+    },
+    //订单模态框--取消按钮
+    CloseDialogFormVisible2() {
+      this.closeDialog2();
+    },
+    //表格导航栏侧边点击事件
     showPageAndSearch(tab, event) {
       // console.log(tab, event);
       // alert(tab.index);
       if (tab.index == 0) {
-        this.isShowPageAndSearch = false;
-      } else {
+        this.isShowPageAndSearch = false; //车位查询
+        this.isShowPageSearch = false; //分页下标
+        this.isShowOrderPageSearch = false; //订单查询
+      } else if (tab.index == 1 || tab.index == 2) {
         this.isShowPageAndSearch = true;
+        this.isShowPageSearch = true;
+        this.isShowOrderPageSearch = false;
+      } else {
+        this.isShowPageAndSearch = false;
+        this.isShowPageSearch = true;
+        this.isShowOrderPageSearch = true;
+        this.getParkingOrderList();
       }
     },
+    //租赁模态框中的租赁时间选择计算
     handleChangeRentMonth(value) {
       this.calculateParkingPrice(this.rentMonth, 300);
       this.expireTime = this.rentMonth;
       console.log("租用时间");
       console.log(this.expireTime);
+    },
+    //订单表设置行颜色rowIndex是下标
+    orderTableRowStyle(row, rowIndex) {
+      console.log(row);
+      if (row.row.orderState == 0) {
+        return "warning-row";
+      } else if (row.row.orderState == 1) {
+        return "success-row";
+      }
+      return "";
+    },
+    handleChangeHouseId(value) {
+      alert(value[3]);
+      this.ownersInfo.house.id=this.value[3];
+    },
+    //input输入框失去鼠标事件-----测试 @blur="duplicateCheck"
+    duplicateCheck() {
+      console.log(this.parkingInfo.parkNumber);
+      alert("hhh");
     },
   },
 };
@@ -657,5 +980,29 @@ export default {
   background: #20b2aa;
   border-color: #20b2aa;
   color: #fff;
+}
+.button4 {
+  background: #f1ee0f;
+  border-color: #d9e668;
+  color: #fff;
+}
+/* 订单详情下拉信息 */
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+.el-table .warning-row {
+  background: oldlace;
+}
+.el-table .success-row {
+  background: #bad1db;
 }
 </style>

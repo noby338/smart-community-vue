@@ -149,6 +149,13 @@
                     </span>
                   </el-menu-item>
                 </router-link>
+                 <router-link class="list-group-item" to="/parkingRecord">
+                  <el-menu-item index="5-4">
+                    <span slot="title">
+                      进出记录
+                    </span>
+                  </el-menu-item>
+                </router-link>
                
               </el-submenu>
 

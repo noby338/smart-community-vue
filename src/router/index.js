@@ -10,6 +10,7 @@ import FormExam from '../pages/example/FormExam'
 import Role from '../pages/Role';
 import Parking from '../pages/Parking';
 import Car from '../pages/Car';
+import ParkingRecord from '../pages/ParkingRecord';
 
 
 export default new VueRouter({
@@ -57,6 +58,10 @@ export default new VueRouter({
             {
                 path: '/car',
                 component: Car,
+            },
+            {
+                path: '/parkingRecord',
+                component: ParkingRecord,
             }
                 //新添的路由放在这里
             ]

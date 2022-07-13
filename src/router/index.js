@@ -13,12 +13,14 @@ import HouseHoldAdd from '../pages/HouseHoldAdd'
 import Role from '../pages/Role';
 import Parking from '../pages/Parking';
 import Car from '../pages/Car';
+import ParkingRecord from '../pages/ParkingRecord';
+import Electricity from '../pages/Electricity';
+import UtilPrice from '../pages/UtilPrice';
 
 
 
 export default new VueRouter({
-    routes: [
-        {
+    routes: [{
             path: '/',
             redirect: '/index'
         },
@@ -30,50 +32,62 @@ export default new VueRouter({
             path: '/index',
             component: Index,
             children: [{
-                path: '/home',
-                component: Home,
-            },
-            {
-                path: '/emp',
-                component: Emp,
-            },
-            {
-                path: '/empAdd',
-                component: EmpAdd,
-            },
-            {
-                path: '/house',
-                component: House,
-            },
-            {
-                path: '/houseHold',
-                component: HouseHold,
-            },
-            {
-                path: '/houseHoldAdd',
-                component: HouseHoldAdd,
-            },
-            {
-                path: '/tableExam',
-                component: TableExam,
-            }
-            ,
-            {
-                path: '/formExam',
-                component: FormExam,
-            },
-            {
-                path: '/Role',
-                component: Role,
-            },
-            {
-                path: '/parking',
-                component: Parking,
-            },
-            {
-                path: '/car',
-                component: Car,
-            }
+
+                    path: '/home',
+                    component: Home,
+                },
+                {
+                    path: '/emp',
+                    component: Emp,
+                },
+                {
+                    path: '/empAdd',
+                    component: EmpAdd,
+                },
+                {
+                    path: '/house',
+                    component: House,
+                },
+                {
+                    path: '/houseHold',
+                    component: HouseHold,
+                },
+                {
+                    path: '/houseHoldAdd',
+                    component: HouseHoldAdd,
+                },
+                {
+                    path: '/tableExam',
+                    component: TableExam,
+                },
+                {
+                    path: '/formExam',
+                    component: FormExam,
+                },
+                {
+                    path: '/Role',
+                    component: Role,
+                },
+                {
+                    path: '/parking',
+                    component: Parking,
+                },
+                {
+                    path: '/car',
+                    component: Car,
+                },
+                {
+                    path: '/parkingRecord',
+                    component: ParkingRecord,
+                },
+                {
+                    path: '/utilPrice',
+                    component: UtilPrice,
+                },
+                {
+                    path: '/electricity',
+                    component: Electricity,
+                }
                 //新添的路由放在这里
             ]
         },

@@ -50,7 +50,8 @@
       <el-table-column align="center" label="操作" min-width="300">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="deleteUser(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" v-if="editForm.state==1" type="danger" @click="deleteUser(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" v-else-if="editForm.state==0" type="danger" @click="activeUser(scope.$index, scope.row)">激活</el-button>
           <el-button size="mini" type="success" @click="menuAccess(scope.$index, scope.row)">权限管理</el-button>
         </template>
       </el-table-column>
@@ -413,6 +414,42 @@ handleCheckAllChange(val) {
           
         })
     },
+
+
+// 删除角色
+    activeUser(index, row) {
+      this.$confirm('确定要激活吗?', '信息', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+            this.$axios.delete("http://localhost:8080/user/active/"+row.loginName )
+            .then(res => {
+              if (res.data.code==200) {
+                this.$message({
+                  type: 'success',
+                  message: '角色已激活！'
+                })
+                this.getdata(this.formInline)
+              } else {
+                this.$message({
+                  type: 'info',
+                  message: res.data.msg
+                })
+              }
+            })
+            .catch(err => {
+              this.loading = false
+              this.$message.error('角色激活失败，请稍后再试！')
+            })
+        })
+        .catch(() => {
+          
+        })
+    },
+
+
     // 数据权限
     menuAccess: function(index, row) {
 // this.$axios.get('http://localhost:8080/allRoles')
@@ -533,7 +570,7 @@ handleCheckAllChange(val) {
             // console.log(this.myroledata);
             
 //   console.log(this.checkedCities);
-            this.menuAccessshow = true
+            this.menuAccessshow = false
             this.loading =false
             
             this.$message({

@@ -91,14 +91,14 @@
                   <i class="el-icon-location"></i>
                   <span>房屋和住户</span>
                 </template>
-                <router-link class="list-group-item" to="/emp">
+                <router-link class="list-group-item" to="/house">
                   <el-menu-item index="3-1">
                     <span slot="title">
                       房屋管理
                     </span>
                   </el-menu-item>
                 </router-link>
-                <router-link class="list-group-item" to="/emp">
+                <router-link class="list-group-item" to="/houseHold">
                   <el-menu-item index="3-2">
                     <span slot="title">
                       住户管理

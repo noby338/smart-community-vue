@@ -7,9 +7,13 @@ import EmpAdd from '../pages/EmpAdd'
 import Login from '../pages/Login'
 import TableExam from '../pages/example/TableExam'
 import FormExam from '../pages/example/FormExam'
+import House from '../pages/House.vue'
+import HouseHold from '../pages/HouseHold'
+import HouseHoldAdd from '../pages/HouseHoldAdd'
 import Role from '../pages/Role';
 import Parking from '../pages/Parking';
 import Car from '../pages/Car';
+
 
 
 export default new VueRouter({
@@ -38,10 +42,22 @@ export default new VueRouter({
                 component: EmpAdd,
             },
             {
+                path: '/house',
+                component: House,
+            },
+            {
+                path: '/houseHold',
+                component: HouseHold,
+            },
+            {
+                path: '/houseHoldAdd',
+                component: HouseHoldAdd,
+            },
+            {
                 path: '/tableExam',
                 component: TableExam,
             }
-                ,
+            ,
             {
                 path: '/formExam',
                 component: FormExam,

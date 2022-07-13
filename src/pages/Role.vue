@@ -22,6 +22,10 @@
         <el-button size="small" type="primary" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
       </el-form-item>
     </el-form>
+    <template>
+    <el-radio v-model="editForm.state" @change="getNewData" label="1">已激活</el-radio>
+    <el-radio v-model="editForm.state" @change="getNewData"  label="0">已注销</el-radio>
+    </template>
     <!--列表-->
     <el-table size="small" :data="listData" highlight-current-row v-loading="loading" border element-loading-text="拼命加载中" style="width: 100%;">
       <el-table-column align="center" type="selection" width="60">
@@ -40,14 +44,14 @@
       </el-table-column>
       <el-table-column sortable prop="state" label="状态" width="100">
       </el-table-column>
-      <el-table-column sortable prop="roleNo" label="角色" width="100">
-      </el-table-column>
+      <!-- <el-table-column sortable prop="rname" label="角色" width="100">
+      </el-table-column> -->
       
       <el-table-column align="center" label="操作" min-width="300">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteUser(scope.$index, scope.row)">删除</el-button>
-          <el-button size="mini" type="success" @click="menuAccess(scope.$index, scope.row)">菜单权限</el-button>
+          <el-button size="mini" type="success" @click="menuAccess(scope.$index, scope.row)">权限管理</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,7 +71,7 @@
          <el-form-item label="密码" prop="password">
           <el-input size="small" v-model="editForm.password" auto-complete="off" placeholder="请输入密码"></el-input>
         </el-form-item> 
-         <el-form-item label="用户名" prop="password">
+         <el-form-item label="用户名" prop="name">
           <el-input size="small" v-model="editForm.name" auto-complete="off" placeholder="请输入用户名"></el-input>
         </el-form-item> 
          <el-form-item label="年龄" prop="age" >
@@ -82,6 +86,9 @@
         <el-form-item label="状态" prop="state">
           <el-input size="small" v-model="editForm.state" auto-complete="off" placeholder="请输入状态"></el-input>
         </el-form-item> 
+        <!-- <el-form-item label="角色" prop="rname">
+          <el-input size="small" v-model="editForm.state" auto-complete="off" placeholder="请输入状态"></el-input>
+        </el-form-item>  -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click='closeDialog("edit")'>取消</el-button>
@@ -90,9 +97,14 @@
     </el-dialog>
     <!-- 菜单权限 -->
     <el-dialog title="菜单权限" :visible.sync="menuAccessshow" width="30%" @click='closeDialog("perm")'>
-      <el-tree ref="tree" default-expand-all="" :data="RoleRight" :props="RoleRightProps" :default-checked-keys="checkmenu" node-key="id" show-checkbox>
-      </el-tree>
       <div slot="footer" class="dialog-footer">
+
+<el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+  <div style="margin: 15px 0;"></div>
+  <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+    <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+  </el-checkbox-group>
+
         <el-button size="small" @click='closeDialog("perm")'>取消</el-button>
         <el-button size="small" type="primary" :loading="loading" class="title" @click="menuPermSave">保存</el-button>
       </div>
@@ -110,15 +122,23 @@
 //   RoleRightSave
 // } from '../../api/userMG'
 import Pagination from '../pages/Pagination'
+ const cityOptions = ["普通用户","社区管理员","超级管理员"];
 export default {
   data() {
     return {
+checkAll: false,
+        checkedCities: [],
+        cities: cityOptions,
+        isIndeterminate: false,
+        
       nshow: true, //switch开启
       fshow: false, //switch关闭
       loading: false, //是显示加载
       editFormVisible: false, //控制编辑页面显示与隐藏
       menuAccessshow: false, //控制数据权限显示与隐藏
       title: '添加',
+
+
       editForm: {
         age: '',
         gender: '',
@@ -126,9 +146,10 @@ export default {
         loginName: '',
         name:'',
         password: '',
-        state: '',
+        state: '1',
         tellphone:'',
         addOrEdit:'',
+        // rname:'',
         token: localStorage.getItem('Authorization')
       },
       // rules 表单验证
@@ -157,6 +178,8 @@ export default {
       },
       userparm: [], //搜索权限
       listData: [], //用户数据
+     myroledata:[],
+     rowdata:{},
       // 数据权限
       RoleRight: [],
       RoleRightProps: {
@@ -198,6 +221,17 @@ export default {
    */
 
   methods: {
+handleCheckAllChange(val) {
+        this.checkedCities = val ? cityOptions : [];
+        this.isIndeterminate = false;
+      },
+      handleCheckedCitiesChange(value) {
+        let checkedCount = value.length;
+        this.checkAll = checkedCount === this.cities.length;
+        this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+      },
+
+
     // 获取角色列表
     getdata(parameter) {
       // 模拟数据
@@ -215,7 +249,7 @@ export default {
       this.pageparm.total = res.data.total
       // 模拟数据结束
 
-      this.$axios.get('http://localhost:8080/user/findAll/'+this.pageparm.currentPage+'/'+this.pageparm.pageSize,
+      this.$axios.get('http://localhost:8080/user/findAll/'+this.pageparm.currentPage+'/'+this.pageparm.pageSize+'/'+this.editForm.state,
       ).then(res=>{
         this.loading=false
         // console.log(res);
@@ -265,8 +299,14 @@ export default {
       this.formInline.limit = parm.pageSize
       this.getdata(this.formInline)
     },
-    // 搜索事件
+   
+    getNewData(){
+        this.getdata(this.formInline)
+    }
+    ,
+     // 搜索事件
     search() {
+        this.loading = false
       this.getdata(this.formInline)
     },
     //显示编辑界面
@@ -375,16 +415,59 @@ export default {
     },
     // 数据权限
     menuAccess: function(index, row) {
-      this.menuAccessshow = true
-      this.saveroleId = row.roleId
-      RoleRightTree(row.roleId)
+// this.$axios.get('http://localhost:8080/allRoles')
+//         .then(res => {
+//             // console.log(res);
+//           if (res.data.code==200) {
+//             this.userparm=res.data.data
+//             console.log(this.userparm);
+//             this.menuAccessshow = true
+//             this.loading =false
+//             this.$message({
+//               type: 'success',
+//               message: '获取权限成功'
+//             })
+            
+//             this.RoleRight = this.changeArr(res.data.data)
+//           } else {
+//             this.$message({
+//               type: 'info',
+//               message: res.data.msg
+//             })
+//           }
+//         })
+//         .catch(err => {
+//           this.loading = false
+//           this.$message.error('获取权限失败，请稍后再试！')
+//         })
+
+
+
+
+        this.editForm.loginName=row.loginName;
+        this.$axios.get('http://localhost:8080/user/findOther/'+this.editForm.loginName)
         .then(res => {
-          if (res.data.success) {
+            // console.log(row);
+            this.rowdata=row
+            // console.log(this.rowdata);
+          if (res.data.code==200) {
+            this.myroledata=res.data.data
+            // console.log(this.myroledata);
+            // console.log("111");
+            this.myroledata.forEach(element => {
+                this.checkedCities.push(element.name)
+            },
+          
+            );
+  console.log(this.checkedCities);
+            this.menuAccessshow = true
+            this.loading =false
+            
             this.$message({
               type: 'success',
               message: '获取权限成功'
             })
-            this.changemenu(res.data.data)
+            
             this.RoleRight = this.changeArr(res.data.data)
           } else {
             this.$message({
@@ -397,16 +480,6 @@ export default {
           this.loading = false
           this.$message.error('获取权限失败，请稍后再试！')
         })
-    },
-    // 选中菜单
-    changemenu(arr) {
-      let change = []
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i].checked) {
-          change.push(arr[i].id)
-        }
-      }
-      this.checkmenu = change
     },
     // tree 递归
     changeArr(list) {
@@ -451,45 +524,68 @@ export default {
     },
     // 菜单权限-保存
     menuPermSave() {
-      let parm = {
-        roleId: this.saveroleId,
-        moduleIds: ''
-      }
-      let node = this.$refs.tree.getCheckedNodes()
-      let moduleIds = []
-      if (node.length != 0) {
-        for (let i = 0; i < node.length; i++) {
-          moduleIds.push(node[i].id)
-        }
-        parm.moduleIds = JSON.stringify(moduleIds)
-      }
-      RoleRightSave(parm)
+      console.log(this.rowdata);
+       this.$axios.put('http://localhost:8080/user/updateperm/'+this.rowdata.id+'/'+this.rowdata.loginName,this.checkedCities)
         .then(res => {
-          if (res.success) {
+            console.log(res);
+          if (res.data.code==200) {
+            // this.myroledata=res.data.data
+            // console.log(this.myroledata);
+            
+//   console.log(this.checkedCities);
+            this.menuAccessshow = true
+            this.loading =false
+            
             this.$message({
               type: 'success',
-              message: '权限保存成功'
+              message: '获取修改成功'
             })
-            this.menuAccessshow = false
-            this.getdata(this.formInline)
+            
+            this.RoleRight = this.changeArr(res.data.data)
           } else {
             this.$message({
               type: 'info',
-              message: res.msg
+              message: res.data.msg
             })
           }
         })
         .catch(err => {
           this.loading = false
-          this.$message.error('权限保存失败，请稍后再试！')
+          this.$message.error('获取权限失败，请稍后再试！')
         })
+
+
+    //   RoleRightSave(parm)
+    //     .then(res => {
+    //       if (res.success) {
+    //         this.$message({
+    //           type: 'success',
+    //           message: '权限保存成功'
+    //         })
+    //         this.menuAccessshow = false
+    //         this.getdata(this.formInline)
+    //       } else {
+    //         this.$message({
+    //           type: 'info',
+    //           message: res.msg
+    //         })
+    //       }
+    //     })
+    //     .catch(err => {
+    //       this.loading = false
+    //       this.$message.error('权限保存失败，请稍后再试！')
+    //     })
     },
     // 关闭编辑、增加弹出框
     closeDialog(dialog) {
       if (dialog == 'edit') {
+       
         this.editFormVisible = false
+        
       } else if (dialog == 'perm') {
         this.menuAccessshow = false
+         this.checkedCities=[]
+         this.rowdata={}
       }
     }
   }

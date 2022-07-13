@@ -32,8 +32,8 @@
       </el-table-column>
       <el-table-column sortable prop="loginName" label="账号" width="100">
       </el-table-column>
-      <el-table-column sortable prop="password" label="密码" width="100">
-      </el-table-column>
+      <!-- <el-table-column sortable prop="password" label="密码" width="100">
+      </el-table-column> -->
       <el-table-column sortable prop="name" label="用户名" width="100">
       </el-table-column>
       <el-table-column sortable prop="age" label="年龄" width="100">
@@ -572,7 +572,7 @@ handleCheckAllChange(val) {
 //   console.log(this.checkedCities);
             this.menuAccessshow = false
             this.loading =false
-            
+            this.checkedCities=[]
             this.$message({
               type: 'success',
               message: '获取修改成功'

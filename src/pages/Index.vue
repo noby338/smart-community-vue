@@ -105,29 +105,29 @@
                     </span>
                   </el-menu-item>
                 </router-link>
-               
+
               </el-submenu>
-            <el-submenu index="4">
+              <el-submenu index="4">
                 <template slot="title">
                   <i class="el-icon-user"></i>
                   <span>权限管理</span>
                 </template>
-                 <router-link class="list-group-item" to="/Role">
+                <router-link class="list-group-item" to="/Role">
                   <el-menu-item index="4-1">
                     <span slot="title">
                       角色管理
                     </span>
                   </el-menu-item>
                 </router-link>
-               
+
               </el-submenu>
 
-                <el-submenu index="5">
+              <el-submenu index="5">
                 <template slot="title">
                   <i class="el-icon-user"></i>
                   <span>停车场管理</span>
                 </template>
-                 <router-link class="list-group-item" to="/parking">
+                <router-link class="list-group-item" to="/parking">
                   <el-menu-item index="5-1">
                     <span slot="title">
                       车位交易
@@ -142,21 +142,45 @@
                   </el-menu-item>
                 </router-link>
 
-                 <router-link class="list-group-item" to="/parking">
+                <router-link class="list-group-item" to="/parking">
                   <el-menu-item index="5-3">
                     <span slot="title">
                       管理信息
                     </span>
                   </el-menu-item>
                 </router-link>
-                 <router-link class="list-group-item" to="/parkingRecord">
+                <router-link class="list-group-item" to="/parkingRecord">
                   <el-menu-item index="5-4">
                     <span slot="title">
                       进出记录
                     </span>
                   </el-menu-item>
                 </router-link>
-               
+
+              </el-submenu>
+
+
+
+              <el-submenu index="6">
+                <template slot="title">
+                  <i class="el-icon-user"></i>
+                  <span>费用管理</span>
+                </template>
+                <router-link class="list-group-item" to="/utilPrice">
+                  <el-menu-item index="6-1">
+                    <span slot="title">
+                      单价管理
+                    </span>
+                  </el-menu-item>
+                </router-link>
+                <router-link class="list-group-item" to="/electricity">
+                  <el-menu-item index="6-2">
+                    <span slot="title">
+                      电费管理
+                    </span>
+                  </el-menu-item>
+                </router-link>
+
               </el-submenu>
 
             </el-menu>

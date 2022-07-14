@@ -28,7 +28,7 @@
       </el-table-column>
       <el-table-column prop="nowMonthNums" label="当月用量" width="280">
       </el-table-column>
-      <el-table-column prop="nowPrices" label="当月电费" width="280">
+      <el-table-column prop="nowPrices" label="当月气费" width="280">
       </el-table-column>
       <el-table-column prop="state" label="状态" width="180">
         <template slot="" slot-scope="scope">
@@ -48,7 +48,7 @@
 
 <script>
 export default {
-  name: "Electricity",
+  name: "Gas",
   data() {
     return {
       idArray: "",
@@ -148,7 +148,7 @@ export default {
       this.getPage(1)
     },
     getPage(pageNum) {
-      this.$axios.post("http://localhost:8080/electricity/select/" + this.monthCom + "/" + pageNum, this.houseInfo
+      this.$axios.post("http://localhost:8080/gas/select/" + this.monthCom + "/" + pageNum, this.houseInfo
       ).then(resp => {
         console.log(resp);
         resp

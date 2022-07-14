@@ -2,6 +2,7 @@
   <el-container>
     <el-header>
       <el-row type="flex" justify="end">
+
         <el-col :span="18">智能社区管理系统</el-col>
         
 <el-menu class="el-menu-demo" mode="horizontal" background-color="#334157" text-color="#fff" active-text-color="#fff">
@@ -18,12 +19,14 @@
     </el-header>
 
     <el-container>
+
       <el-aside width="180px" >
         <el-row class="tac">
           <el-col :span="24">
             <el-menu default-active="" v-for="(item,index) in listData" :key="index" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
             <el-submenu index=index v-if="item.childMenu.length!=0">
                 <template slot="title" >
+
                   <i class="el-icon-user"></i>
                   <span>{{item.menuname}}</span>
                 </template>
@@ -37,6 +40,7 @@
                 </router-link>
 
               </el-submenu>
+
             </el-menu>
           </el-col>
         </el-row>
@@ -139,14 +143,14 @@ this.$axios.post('http://localhost:8080/rbacMenu/findAllMenu',this.localData
 
 .el-header,
 .el-footer {
-  background-color: #B3C0D1;
+  background-color: rgba(64, 158, 255,0.8);
   color: #333;
   text-align: center;
   line-height: 60px;
 }
 
 .el-aside {
-  background-color: #D3DCE6;
+  /* background-color: #D3DCE6; */
   color: #333;
   text-align: center;
   line-height: 200px;
@@ -154,10 +158,10 @@ this.$axios.post('http://localhost:8080/rbacMenu/findAllMenu',this.localData
 
 .el-main {
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  background-color: #E9EEF3;
+  /* background-color: #E9EEF3; */
   color: #333;
   text-align: center;
-  line-height: 100px;
+  line-height: 60px;
 }
 
 body>.el-container {
@@ -173,6 +177,18 @@ body>.el-container {
   line-height: 320px;
 }
 .submenu {
-  float: right;
+  float: right;}
+
+h1 {
+    /* display: inline-block;
+    position: relative; */
+    /* background: rgba(64, 158, 255,0.8); */
+    color: white;
+    text-align: center;
+    padding: 0px 30px;
+    height: 45px;
+    line-height: 25px;
+    border-radius: 10px 0px 10px 0px;
+    letter-spacing: 2px;
 }
 </style>

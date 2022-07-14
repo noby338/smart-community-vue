@@ -14,9 +14,11 @@ import Role from '../pages/Role';
 import Parking from '../pages/Parking';
 import Car from '../pages/Car';
 import ParkingRecord from '../pages/ParkingRecord';
-import Electricity from '../pages/Electricity';
+import PropertyCard from '../pages/PropertyCard';
 import UtilPrice from '../pages/UtilPrice';
-
+import Electricity from '../pages/Electricity';
+import Water from '../pages/Water';
+import Gas from '../pages/Gas';
 
 
 export default new VueRouter({
@@ -79,6 +81,9 @@ export default new VueRouter({
                 {
                     path: '/parkingRecord',
                     component: ParkingRecord,
+                },{
+                    path: '/propertyCard',
+                    component: PropertyCard,
                 },
                 {
                     path: '/utilPrice',
@@ -87,6 +92,14 @@ export default new VueRouter({
                 {
                     path: '/electricity',
                     component: Electricity,
+                },
+                {
+                    path: '/water',
+                    component: Water,
+                },
+                {
+                    path: '/gas',
+                    component: Gas,
                 }
                 //新添的路由放在这里
             ]

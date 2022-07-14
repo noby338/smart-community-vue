@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <el-row type="flex" justify="end">
-        <el-col :span="18">智能社区管理系统</el-col>
+        <el-col :span="18"><h1>智能社区管理系统</h1></el-col>
         <el-col :span="3">
           <router-link class="log" to="/login">登录</router-link>
         </el-col>
@@ -10,10 +10,10 @@
     </el-header>
 
     <el-container>
-      <el-aside width="180px">
+      <el-aside width="250px">
         <el-row class="tac">
           <el-col :span="24">
-            <el-menu default-active="" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+            <el-menu default-active="" class="el-menu" @open="handleOpen" @close="handleClose">
               <!-- <el-submenu index="1">
                 <template slot="title">
                   <i class="el-icon-location"></i>
@@ -37,7 +37,7 @@
                 <span slot="title">导航二</span>
               </el-menu-item> -->
 
-              <el-submenu index="0">
+              <!-- <el-submenu index="0">
                 <template slot="title">
                   <i class="el-icon-location"></i>
                   <span>例子</span>
@@ -56,8 +56,8 @@
                     </span>
                   </el-menu-item>
                 </router-link>
-              </el-submenu>
-              <router-link class="list-group-item" to="/home">
+              </el-submenu> -->
+              <!-- <router-link class="list-group-item" to="/home">
                 <el-menu-item index="1">
                   <i class="el-icon-s-grid"></i>
                   <span slot="title">
@@ -85,7 +85,7 @@
                     </span>
                   </el-menu-item>
                 </router-link>
-              </el-submenu>
+              </el-submenu> -->
               <el-submenu index="3">
                 <template slot="title">
                   <i class="el-icon-location"></i>
@@ -163,24 +163,44 @@
 
               <el-submenu index="6">
                 <template slot="title">
-                  <i class="el-icon-user"></i>
+                  <i class="el-icon-s-order"></i>
                   <span>费用管理</span>
                 </template>
-                <router-link class="list-group-item" to="/utilPrice">
+                <router-link class="list-group-item" to="/propertyCard">
                   <el-menu-item index="6-1">
+                    <span slot="title">
+                      物业卡管理
+                    </span>
+                  </el-menu-item>
+                </router-link>
+                <router-link class="list-group-item" to="/utilPrice">
+                  <el-menu-item index="6-2">
                     <span slot="title">
                       单价管理
                     </span>
                   </el-menu-item>
                 </router-link>
                 <router-link class="list-group-item" to="/electricity">
-                  <el-menu-item index="6-2">
+                  <el-menu-item index="6-3">
                     <span slot="title">
                       电费管理
                     </span>
                   </el-menu-item>
                 </router-link>
-
+                <router-link class="list-group-item" to="/water">
+                  <el-menu-item index="6-4">
+                    <span slot="title">
+                      水费管理
+                    </span>
+                  </el-menu-item>
+                </router-link>
+                <router-link class="list-group-item" to="/gas">
+                  <el-menu-item index="6-5">
+                    <span slot="title">
+                      气费管理
+                    </span>
+                  </el-menu-item>
+                </router-link>
               </el-submenu>
 
             </el-menu>
@@ -220,14 +240,14 @@ export default {
 
 .el-header,
 .el-footer {
-  background-color: #B3C0D1;
+  background-color: rgba(64, 158, 255,0.8);
   color: #333;
   text-align: center;
   line-height: 60px;
 }
 
 .el-aside {
-  background-color: #D3DCE6;
+  /* background-color: #D3DCE6; */
   color: #333;
   text-align: center;
   line-height: 200px;
@@ -235,10 +255,10 @@ export default {
 
 .el-main {
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  background-color: #E9EEF3;
+  /* background-color: #E9EEF3; */
   color: #333;
   text-align: center;
-  line-height: 100px;
+  line-height: 60px;
 }
 
 body>.el-container {
@@ -252,5 +272,18 @@ body>.el-container {
 
 .el-container:nth-child(7) .el-aside {
   line-height: 320px;
+}
+
+h1 {
+    /* display: inline-block;
+    position: relative; */
+    /* background: rgba(64, 158, 255,0.8); */
+    color: white;
+    text-align: center;
+    padding: 0px 30px;
+    height: 45px;
+    line-height: 25px;
+    border-radius: 10px 0px 10px 0px;
+    letter-spacing: 2px;
 }
 </style>

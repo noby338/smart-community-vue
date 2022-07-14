@@ -18,7 +18,7 @@
                                 type="password">
                             </el-input>
                         </el-form-item>
-                        <el-checkbox class="remember" v-model="rememberpwd">{{rememberpwd}}</el-checkbox>
+                        <el-checkbox class="remember" v-model="rememberpwd">记住密码</el-checkbox>
                         <el-button type="" @click="resetLoginForm">重 置</el-button>
                         <el-button type="primary" @click="login">登 录</el-button>
 

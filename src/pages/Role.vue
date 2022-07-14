@@ -32,18 +32,20 @@
       </el-table-column>
       <el-table-column sortable prop="loginName" label="账号" width="100">
       </el-table-column>
-      <!-- <el-table-column sortable prop="password" label="密码" width="100">
-      </el-table-column> -->
+   
       <el-table-column sortable prop="name" label="用户名" width="100">
       </el-table-column>
       <el-table-column sortable prop="age" label="年龄" width="100">
       </el-table-column>
       <el-table-column sortable prop="gender" label="性别" width="100">
+
+
+        
       </el-table-column>
       <el-table-column sortable prop="tellphone" label="电话" width="100">
       </el-table-column>
-      <el-table-column sortable prop="state" label="状态" width="100">
-      </el-table-column>
+      <!-- <el-table-column sortable prop="state" label="状态" width="100">
+      </el-table-column> -->
       <!-- <el-table-column sortable prop="rname" label="角色" width="100">
       </el-table-column> -->
       
@@ -84,9 +86,9 @@
          <el-form-item label="电话" prop="tellphone">
           <el-input size="small" v-model="editForm.tellphone" auto-complete="off" placeholder="请输入电话"></el-input>
         </el-form-item>
-        <el-form-item label="状态" prop="state">
+        <!-- <el-form-item label="状态" prop="state">
           <el-input size="small" v-model="editForm.state" auto-complete="off" placeholder="请输入状态"></el-input>
-        </el-form-item> 
+        </el-form-item>  -->
         <!-- <el-form-item label="角色" prop="rname">
           <el-input size="small" v-model="editForm.state" auto-complete="off" placeholder="请输入状态"></el-input>
         </el-form-item>  -->
@@ -127,6 +129,9 @@ import Pagination from '../pages/Pagination'
 export default {
   data() {
     return {
+// value: 2,
+
+
 checkAll: false,
         checkedCities: [],
         cities: cityOptions,

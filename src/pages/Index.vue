@@ -3,9 +3,17 @@
     <el-header>
       <el-row type="flex" justify="end">
         <el-col :span="18">智能社区管理系统</el-col>
-        <el-col :span="3">
-          <router-link class="log" to="/login">登录</router-link>
-        </el-col>
+        
+<el-menu class="el-menu-demo" mode="horizontal" background-color="#334157" text-color="#fff" active-text-color="#fff">
+    
+    <el-submenu index="2" class="submenu">
+      <!-- <template slot="title">{{localData.loginName}}</template> -->
+      <template slot="title">{{localData.name}}</template>
+
+      <el-menu-item @click="exit()" index="2-3">退出</el-menu-item>
+    </el-submenu>
+  </el-menu>
+
       </el-row>
     </el-header>
 
@@ -60,6 +68,31 @@ export default {
   name: "index",
   created(){this.indexLoad()},
   methods: {
+     exit() {
+      this.$confirm('退出登录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          setTimeout(() => {
+             window.localStorage.clear()
+            this.$router.push({ path: '/login' })
+            this.$message({
+              type: 'success',
+              message: '已退出登录!'
+            })
+          }, 1000)
+         
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
+    }
+    ,
     indexLoad(){
         
     
@@ -138,5 +171,8 @@ body>.el-container {
 
 .el-container:nth-child(7) .el-aside {
   line-height: 320px;
+}
+.submenu {
+  float: right;
 }
 </style>

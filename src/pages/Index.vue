@@ -27,7 +27,7 @@
             <el-submenu index=index v-if="item.childMenu.length!=0">
                 <template slot="title" >
 
-                  <i class="el-icon-user"></i>
+                  <i class=""></i>
                   <span>{{item.menuname}}</span>
                 </template>
                  <router-link class="list-group-item" 

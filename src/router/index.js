@@ -7,6 +7,9 @@ import EmpAdd from '../pages/EmpAdd'
 import Login from '../pages/Login'
 import TableExam from '../pages/example/TableExam'
 import FormExam from '../pages/example/FormExam'
+import House from '../pages/House.vue'
+import HouseHold from '../pages/HouseHold'
+import HouseHoldAdd from '../pages/HouseHoldAdd'
 import Role from '../pages/Role';
 import Parking from '../pages/Parking';
 import Car from '../pages/Car';
@@ -16,6 +19,7 @@ import UtilPrice from '../pages/UtilPrice';
 import Electricity from '../pages/Electricity';
 import Water from '../pages/Water';
 import Gas from '../pages/Gas';
+
 
 export default new VueRouter({
     routes: [{
@@ -30,6 +34,7 @@ export default new VueRouter({
             path: '/index',
             component: Index,
             children: [{
+
                     path: '/home',
                     component: Home,
                 },
@@ -40,6 +45,18 @@ export default new VueRouter({
                 {
                     path: '/empAdd',
                     component: EmpAdd,
+                },
+                {
+                    path: '/house',
+                    component: House,
+                },
+                {
+                    path: '/houseHold',
+                    component: HouseHold,
+                },
+                {
+                    path: '/houseHoldAdd',
+                    component: HouseHoldAdd,
                 },
                 {
                     path: '/tableExam',

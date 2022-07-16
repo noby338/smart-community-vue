@@ -10,23 +10,23 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="queryParkingRecords">查询</el-button>
-        <el-button type="primary" @click="addCarInParkingRecord">添加车辆进入记录</el-button>
+        <el-button type="primary" @click="addCarInParkingRecord">车辆进入</el-button>
       </el-form-item>
     </el-form>
     <!-- 车辆信息展示表格 -->
     <div>
       <el-table :data="page.list" style="width: 100%">
-        <el-table-column prop="recordNumber" label="记录编号" width="100"> </el-table-column>
+        <el-table-column prop="recordNumber" label="记录编号" width="200"> </el-table-column>
         <el-table-column prop="carInfo.carNumber" label="车牌号" width="100"></el-table-column>
         <el-table-column prop="ownersInfo.name" label="车主名" width="100"></el-table-column>
         <el-table-column prop="ownersInfo.telephone" label="车主电话" width="150"></el-table-column>
-        <el-table-column prop="inTime" label="进入时间" width="100"></el-table-column>
-        <el-table-column prop="outTime" label="离开时间" width="100"></el-table-column>
+        <el-table-column prop="inTime" label="进入时间" width="160"></el-table-column>
+        <el-table-column prop="outTime" label="离开时间" width="160"></el-table-column>
         <el-table-column prop="cost" label="费用" width="100"></el-table-column>
-        <el-table-column prop="payType" label="支付方式" width="150"></el-table-column>
+        <!-- <el-table-column prop="payType" label="支付方式" width="150"></el-table-column> -->
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEditOut(scope.row)">车辆出去</el-button>
+            <el-button size="mini" @click="handleEditOut(scope.row)">车辆离开</el-button>
           </template>
         </el-table-column>
       </el-table>

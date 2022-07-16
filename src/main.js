@@ -10,6 +10,9 @@ import App from './App.vue'//搭建脚手架后才识别该语句
 import VueRouter from 'vue-router'
 import router from './router'
 import axios from 'axios';
+import * as echarts from 'echarts'
+ 
+
 
 //关闭 vue 的生产提示
 Vue.config.productionTip = false
@@ -19,6 +22,10 @@ axios.defaults.withCredentials = true;
 
 //自定义全局变量使用 $开头 命名，其他页面可以通过 this.$axios 使用该变量
 Vue.prototype.$axios=axios
+
+//使用echarts
+Vue.prototype.$echarts = echarts 
+
 
 // 添加请求拦截器
 axios.interceptors.request.use(config => {

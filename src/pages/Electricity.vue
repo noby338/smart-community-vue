@@ -1,6 +1,7 @@
 
 <template>
   <div>
+
     <el-form ref="searchElec" :model="searchEmp" label-width="80px" :inline="true" @keyup.enter.native="enterSearch"
       align="left">
 
@@ -21,14 +22,22 @@
       </el-form-item>
 
     </el-form>
+    <el-descriptions class="margin-top" title="" :column="3" :size="size" border>
+      <el-descriptions-item>
+        <template slot="label">
+          总计用量(千瓦‧时)：
+        </template>
+        {{sum}}
+      </el-descriptions-item>
+    </el-descriptions>
     <el-table :data="page.list" style="width: 100%" :row-class-name="tableRowColor">
       <el-table-column prop="house.houseNum" label="房屋编号" width="180">
       </el-table-column>
       <el-table-column prop="month" label="月份" width="280">
       </el-table-column>
-      <el-table-column prop="nowMonthNums" label="当月用量" width="280">
+      <el-table-column prop="nowMonthNums" label="当月用量(千瓦‧时)" width="280">
       </el-table-column>
-      <el-table-column prop="nowPrices" label="当月电费" width="280">
+      <el-table-column prop="nowPrices" label="当月电费(元)" width="280">
       </el-table-column>
       <el-table-column prop="state" label="状态" width="180">
         <template slot="" slot-scope="scope">
@@ -51,6 +60,7 @@ export default {
   name: "Electricity",
   data() {
     return {
+      sum:'',//用量总计
       idArray: "",
       month: '',
       houseBuildings: [],
@@ -150,10 +160,17 @@ export default {
     getPage(pageNum) {
       this.$axios.post("http://localhost:8080/electricity/select/" + this.monthCom + "/" + pageNum, this.houseInfo
       ).then(resp => {
-        console.log(resp);
-        resp
         if (resp.data.code === 200) {
           this.page = resp.data.data;
+        } else {
+          this.$message.error('请求错误');
+        }
+      });
+
+      this.$axios.post("http://localhost:8080/electricity/selectSum/" + this.monthCom, this.houseInfo
+      ).then(resp => {
+        if (resp.data.code === 200) {
+          this.sum = resp.data.data;
         } else {
           this.$message.error('请求错误');
         }

@@ -21,14 +21,22 @@
       </el-form-item>
 
     </el-form>
+    <el-descriptions class="margin-top" title="" :column="3" :size="size" border>
+      <el-descriptions-item>
+        <template slot="label">
+          总计用量(吨)：
+        </template>
+        {{sum}}
+      </el-descriptions-item>
+    </el-descriptions>
     <el-table :data="page.list" style="width: 100%" :row-class-name="tableRowColor">
       <el-table-column prop="house.houseNum" label="房屋编号" width="180">
       </el-table-column>
       <el-table-column prop="month" label="月份" width="280">
       </el-table-column>
-      <el-table-column prop="nowMonthNums" label="当月用量" width="280">
+      <el-table-column prop="nowMonthNums" label="当月用量(吨)" width="280">
       </el-table-column>
-      <el-table-column prop="nowPrices" label="当月水费" width="280">
+      <el-table-column prop="nowPrices" label="当月水费(元)" width="280">
       </el-table-column>
       <el-table-column prop="state" label="状态" width="180">
         <template slot="" slot-scope="scope">
@@ -51,6 +59,7 @@ export default {
   name: "Water",
   data() {
     return {
+      sum:'',
       idArray: "",
       month: '',
       houseBuildings: [],
@@ -154,6 +163,14 @@ export default {
         resp
         if (resp.data.code === 200) {
           this.page = resp.data.data;
+        } else {
+          this.$message.error('请求错误');
+        }
+      })
+      this.$axios.post("http://localhost:8080/water/selectSum/" + this.monthCom, this.houseInfo
+      ).then(resp => {
+        if (resp.data.code === 200) {
+          this.sum = resp.data.data;
         } else {
           this.$message.error('请求错误');
         }

@@ -21,6 +21,7 @@ import Water from '../pages/Water';
 import Gas from '../pages/Gas';
 
 
+
 export default new VueRouter({
     routes: [{
             path: '/',
@@ -101,6 +102,8 @@ export default new VueRouter({
                     path: '/gas',
                     component: Gas,
                 }
+              
+                ,
                 //新添的路由放在这里
             ]
         },

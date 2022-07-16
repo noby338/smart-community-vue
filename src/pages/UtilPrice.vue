@@ -58,96 +58,99 @@
     </el-dialog>
 
 
-    <el-tabs v-model="activeName"  @tab-click="handleClickTab">
-      <!-- <el-tab-pane :label="utilPrice[0].name" name="one">
-        <el-table :data="utilPrice[0].gradientPriceList" style="width: 100%">
-          <el-table-column prop="name" label="梯度">
-          </el-table-column>
-          <el-table-column prop="beginning" label="开始量">
-          </el-table-column>
-          <el-table-column prop="end" label="结束量">
-          </el-table-column>
-          <el-table-column prop="price" label="单价">
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot="header" slot-scope="scope">
-              <el-button size="mini" @click="handleAdd(1)">添加梯度</el-button>
-            </template>
-            <template slot-scope="scope">
-              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
-                :disabled="(scope.$index !== (utilPrice[0].gradientPriceList.length - 1)||scope.$index ===0) ? true : false">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-tab-pane> -->
+    <el-tabs v-model="activeName" @tab-click="handleClickTab">
       <el-tab-pane :label="utilPrice[1].name" name="elec">
-        <el-table :data="utilPrice[1].gradientPriceList" style="width: 100%">
-          <el-table-column prop="name" label="梯度">
-          </el-table-column>
-          <el-table-column prop="beginning" label="开始量(千瓦‧时)">
-          </el-table-column>
-          <el-table-column prop="end" label="结束量(千瓦‧时)">
-          </el-table-column>
-          <el-table-column prop="price" label="单价(元)">
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot="header" slot-scope="scope">
-              <el-button size="mini" @click="handleAdd(2)">添加梯度</el-button>
-            </template>
-            <template slot-scope="scope">
-              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
-                :disabled="(scope.$index !== (utilPrice[1].gradientPriceList.length - 1)||scope.$index ===0) ? true : false">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <el-row>
+          <el-col :span="12">
+            <el-table :data="utilPrice[1].gradientPriceList" style="width: 100%">
+              <el-table-column prop="name" label="梯度">
+              </el-table-column>
+              <el-table-column prop="beginning" label="开始量(千瓦‧时)">
+              </el-table-column>
+              <el-table-column prop="end" label="结束量(千瓦‧时)">
+              </el-table-column>
+              <el-table-column prop="price" label="单价(元)" width="100">
+              </el-table-column>
+              <el-table-column label="操作" width="150">
+                <template slot="header" slot-scope="scope">
+                  <el-button size="mini" @click="handleAdd(2)">添加梯度</el-button>
+                </template>
+                <template slot-scope="scope">
+                  <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
+                    :disabled="(scope.$index !== (utilPrice[1].gradientPriceList.length - 1) || scope.$index === 0) ? true : false">
+                    删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
+          <el-col :span="12">
+            <div id="elecEchart"></div>
+          </el-col>
+        </el-row>
       </el-tab-pane>
       <el-tab-pane :label="utilPrice[2].name" name="water">
-        <el-table :data="utilPrice[2].gradientPriceList" style="width: 100%">
-          <el-table-column prop="name" label="梯度">
-          </el-table-column>
-          <el-table-column prop="beginning" label="开始量(吨)">
-          </el-table-column>
-          <el-table-column prop="end" label="结束量(吨)">
-          </el-table-column>
-          <el-table-column prop="price" label="单价(元)">
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot="header" slot-scope="scope">
-              <el-button size="mini" @click="handleAdd(3)">添加梯度</el-button>
-            </template>
-            <template slot-scope="scope">
-              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
-                :disabled="(scope.$index !== (utilPrice[2].gradientPriceList.length - 1)||scope.$index ===0) ? true : false">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <el-row>
+          <el-col :span="12">
+            <el-table :data="utilPrice[2].gradientPriceList" style="width: 100%">
+              <el-table-column prop="name" label="梯度">
+              </el-table-column>
+              <el-table-column prop="beginning" label="开始量(吨)">
+              </el-table-column>
+              <el-table-column prop="end" label="结束量(吨)">
+              </el-table-column>
+              <el-table-column prop="price" label="单价(元)" width="100">
+              </el-table-column>
+              <el-table-column label="操作" width="150">
+                <template slot="header" slot-scope="scope">
+                  <el-button size="mini" @click="handleAdd(3)">添加梯度</el-button>
+                </template>
+                <template slot-scope="scope">
+                  <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
+                    :disabled="(scope.$index !== (utilPrice[2].gradientPriceList.length - 1) || scope.$index === 0) ? true : false">
+                    删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
+          <el-col :span="12">
+            <div id="waterEchart"></div>
+          </el-col>
+        </el-row>
       </el-tab-pane>
       <el-tab-pane :label="utilPrice[3].name" name="gas">
-        <el-table :data="utilPrice[3].gradientPriceList" style="width: 100%">
-          <el-table-column prop="name" label="梯度">
-          </el-table-column>
-          <el-table-column prop="beginning" label="开始量(立方米)">
-          </el-table-column>
-          <el-table-column prop="end" label="结束量(立方米)">
-          </el-table-column>
-          <el-table-column prop="price" label="单价(元)">
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot="header" slot-scope="scope">
-              <el-button size="mini" @click="handleAdd(4)">添加梯度</el-button>
-            </template>
-            <template slot-scope="scope">
-              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
-                :disabled="(scope.$index !== (utilPrice[3].gradientPriceList.length - 1)||scope.$index ===0) ? true : false">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <el-row>
+          <el-col :span="12">
+            <el-table :data="utilPrice[3].gradientPriceList" style="width: 100%">
+              <el-table-column prop="name" label="梯度">
+              </el-table-column>
+              <el-table-column prop="beginning" label="开始量(立方米)">
+              </el-table-column>
+              <el-table-column prop="end" label="结束量(立方米)">
+              </el-table-column>
+              <el-table-column prop="price" label="单价(元)" width="100">
+              </el-table-column>
+              <el-table-column label="操作" width="150">
+                <template slot="header" slot-scope="scope">
+                  <el-button size="mini" @click="handleAdd(4)">添加梯度</el-button>
+                </template>
+                <template slot-scope="scope">
+                  <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
+                    :disabled="(scope.$index !== (utilPrice[3].gradientPriceList.length - 1) || scope.$index === 0) ? true : false">
+                    删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
+          <el-col :span="12">
+            <div id="gasEchart"></div>
+          </el-col>
+        </el-row>
       </el-tab-pane>
     </el-tabs>
+
   </div>
 </template>
 
@@ -215,7 +218,7 @@ export default {
           { required: true, message: '请输入本梯度开始量', trigger: 'blur' },
           { validator: rightNum, trigger: 'blur' }
         ],
-     
+
         price: [
           { required: true, message: '请输入本梯度单价', trigger: 'blur' },
           { validator: rightNum, trigger: 'blur' }
@@ -358,15 +361,280 @@ export default {
         name: null,
         beginning: null,
         price: null
+      },
+
+      //电费曲线
+      elecPlot: {
+        tooltip: { //鼠标悬浮提示信息
+          trigger: 'axis', //折线图的线上
+          backgroundColor: 'rgba(250,250,250,0.3)'
+        },
+        toolbox: { //工具箱，如另存图片
+                    right: 20,
+                    feature: {
+                        saveAsImage: {}, //保存图片
+                        dataView: {}, //数据框
+
+                    }
+                },
+        animation: true, //图例翻页动画
+        grid: { //网格配置，控制图表显示部分大小
+          show: true,
+          top: 60,
+          left: 30,
+          right: 20,
+          bottom: 15,
+          containLabel: true, //显示坐标轴上的数据
+          // backgroundColor: 'rgba(120, 140, 200, 0.2)'
+        },
+        xAxis: {
+          name: '用量(千瓦·时)',
+          boundaryGap: true, //图表显示部分和坐标轴是否有缝隙
+          min: 0,
+          max: function (value) {
+             return Math.round(value.max * 1.2);
+          },
+          minorTick: { //是否显示刻度线
+            show: true
+          },
+          minorSplitLine: { //是否显示分割线
+            show: true
+          },
+          nameLocation: 'middle',
+          nameGap: 20, //轴名字移动
+        },
+        yAxis: [{
+          name: '费用/(元)',
+          min: 0, //设置坐标轴范围
+          max: function (value) {
+            return Math.round(value.max * 1.2);
+          },
+          minorTick: {
+            show: true
+          },
+          minorSplitLine: {
+            show: true
+          },
+          axisLabel: {
+          }
+        }],
+        series: [ //系列图表配置，决定显示的图标类型 
+          {
+            type: 'line',
+            name: '费用(元)',
+            showSymbol: false,
+            clip: true,
+            data: [],
+            markPoint: {
+              symbol: 'circle',
+              symbolSize: 5,
+              label: {
+                fontSize: 8,
+                position: [0, -10]
+              },
+              data: [
+                {
+                  name: '固定 x 像素位置',
+                  xAxis: 100,
+                }
+              ]
+            },
+          }
+        ]
+      },
+      //水费曲线
+      waterPlot: {
+        tooltip: { //鼠标悬浮提示信息
+          trigger: 'axis', //折线图的线上
+          backgroundColor: 'rgba(250,250,250,0.3)'
+        },
+        toolbox: { //工具箱，如另存图片
+                    right: 20,
+                    feature: {
+                        saveAsImage: {}, //保存图片
+                        dataView: {}, //数据框
+
+                    }
+                },
+        animation: true, //图例翻页动画
+        grid: { //网格配置，控制图表显示部分大小
+          show: true,
+          top: 60,
+          left: 30,
+          right: 20,
+          bottom: 15,
+          containLabel: true, //显示坐标轴上的数据
+          // backgroundColor: 'rgba(120, 140, 200, 0.2)'
+        },
+        xAxis: {
+          name: '用量(吨)',
+          boundaryGap: true, //图表显示部分和坐标轴是否有缝隙
+          min: 0,
+          max: function (value) {
+             return Math.round(value.max * 1.2);
+          },
+          minorTick: { //是否显示刻度线
+            show: true
+          },
+          minorSplitLine: { //是否显示分割线
+            show: true
+          },
+          nameLocation: 'middle',
+          nameGap: 20, //轴名字移动
+        },
+        yAxis: [{
+          name: '费用/(元)',
+          min: 0, //设置坐标轴范围
+          max: function (value) {
+             return Math.round(value.max * 1.2);
+          },
+          minorTick: {
+            show: true
+          },
+          minorSplitLine: {
+            show: true
+          },
+          axisLabel: {
+          }
+        }],
+        series: [ //系列图表配置，决定显示的图标类型 
+          {
+            type: 'line',
+            name: '费用(元)',
+            showSymbol: false,
+            clip: true,
+            data: [],
+            markPoint: {
+              symbol: 'circle',
+              symbolSize: 5,
+              label: {
+                fontSize: 8,
+                position: [0, -10]
+              },
+              data: [
+                {
+                  name: '固定 x 像素位置',
+                  xAxis: 100,
+                }
+              ]
+            },
+          }
+        ]
+      },
+      //气费曲线
+      gasPlot: {
+        tooltip: { //鼠标悬浮提示信息
+          trigger: 'axis', //折线图的线上
+          backgroundColor: 'rgba(250,250,250,0.3)'
+        },
+        toolbox: { //工具箱，如另存图片
+                    right: 20,
+                    feature: {
+                        saveAsImage: {}, //保存图片
+                        dataView: {}, //数据框
+
+                    }
+                },
+        animation: true, //图例翻页动画
+        grid: { //网格配置，控制图表显示部分大小
+          show: true,
+          top: 60,
+          left: 30,
+          right: 20,
+          bottom: 15,
+          containLabel: true, //显示坐标轴上的数据
+          // backgroundColor: 'rgba(120, 140, 200, 0.2)'
+        },
+        xAxis: {
+          name: '用量(立方米)',
+          boundaryGap: true, //图表显示部分和坐标轴是否有缝隙
+          min: 0,
+          max: function (value) {
+             return Math.round(value.max * 1.2);
+          },
+          minorTick: { //是否显示刻度线
+            show: true
+          },
+          minorSplitLine: { //是否显示分割线
+            show: true
+          },
+          nameLocation: 'middle',
+          nameGap: 20, //轴名字移动
+        },
+        yAxis: [{
+          name: '费用/(元)',
+          min: 0, //设置坐标轴范围
+          max: function (value) {
+             return Math.round(value.max * 1.2);
+          },
+          minorTick: {
+            show: true
+          },
+          minorSplitLine: {
+            show: true
+          },
+          axisLabel: {
+          }
+        }],
+        series: [ //系列图表配置，决定显示的图标类型 
+          {
+            type: 'line',
+            name: '费用(元)',
+            showSymbol: false,
+            clip: true,
+            data: [],
+            markPoint: {
+              symbol: 'circle',
+              symbolSize: 5,
+              label: {
+                fontSize: 8,
+                position: [0, -10]
+              },
+              data: [
+                {
+                  name: '固定 x 像素位置',
+                  xAxis: 100,
+                }
+              ]
+            },
+          }
+        ]
       }
 
     }
   },
   methods: {
+    //加载echarts
+    getLoadEcharts(utilId) {
+
+
+      this.$axios.get("http://localhost:8080/utilPrice/selectQuantityAndCostArray/" + utilId
+      ).then(resp => {
+        if (resp.data.code === 200) {
+          let myChart;
+          let plot;
+          if (utilId == 2) {
+            myChart = this.$echarts.init(document.querySelector("#elecEchart"));
+            plot = this.elecPlot;
+          } else if (utilId == 3) {
+            myChart = this.$echarts.init(document.querySelector("#waterEchart"));
+            plot = this.waterPlot;
+          } else if (utilId == 4) {
+            myChart = this.$echarts.init(document.querySelector("#gasEchart"));
+            plot = this.gasPlot;
+          }
+          plot.series[0].data = resp.data.data;
+          myChart.setOption(plot);
+        } else {
+          this.$message.error('请求异常');
+        }
+      })
+    },
+
     //添加梯度
-    handleAdd(i){
+    handleAdd(i) {
       this.dialogFormVisible2 = true;
-      this.insertGradient.utilId =  i;
+      this.insertGradient.utilId = i;
     },
     //编辑记录
     handleEdit(index, row) {
@@ -377,7 +645,7 @@ export default {
       this.newUtilPrice = this.utilPrice;
     },
     //点击tab
-    handleClickTab(tab,event) {
+    handleClickTab(tab, event) {
     },
 
 
@@ -393,6 +661,9 @@ export default {
           if (resp.data.code === 200) {
             this.$message.success('删除成功');
             this.getUtilPrice();//修改成功后刷新页面
+            this.getLoadEcharts(2);
+            this.getLoadEcharts(3);
+            this.getLoadEcharts(4);
           } else {
             this.$message.error('删除失败');
           }
@@ -427,6 +698,9 @@ export default {
               this.$message.success('修改成功');
               this.dialogFormVisible = false;
               this.getUtilPrice();//修改成功后刷新页面
+              this.getLoadEcharts(2);
+              this.getLoadEcharts(3);
+              this.getLoadEcharts(4);
             } else {
               this.$message.error('请求错误');
             }
@@ -446,6 +720,9 @@ export default {
               this.$message.success('添加成功');
               this.dialogFormVisible2 = false;
               this.getUtilPrice();//添加成功后刷新页面
+              this.getLoadEcharts(2);
+              this.getLoadEcharts(3);
+              this.getLoadEcharts(4);
             } else {
               this.$message.error('请求错误');
             }
@@ -458,11 +735,6 @@ export default {
     },
 
 
-
-  
-
-
-
     updateCancel() {
       this.dialogFormVisible = false
       this.$message('取消修改');
@@ -472,44 +744,15 @@ export default {
       this.insertGradient = this.initInsertGradient;
       this.$message('取消添加');
     },
-    //分页组件页码改变事件
-    // handleCurrentChange(pageNum) {
-    //   this.getEmp(pageNum);
-    // },
-    // //点击查询事件
-    // onSubmit() {
-    //   this.getEmp(1)
-    // },
-    // //键盘 enter 事件
-    // enterSearch() {
-    //   this.onSubmit()
-    // },
-    // //清除条件查询
-    // clear() {
-    //   this.searchEmp = {
-    //     eid: '',
-    //     ename: '',
-    //     dep: ''
-    //   }
-    // },
-    // //获取所有的部门信息
-    // getAllDep() {
-    //   this.$axios.get("http://localhost:8080/selectAllDep").then(resp => {
-    //     if (resp.data.code === 200) {
-    //       this.deps = resp.data.data;
-    //     } else if (resp.data.code === 401) {
-    //       this.$router.push("/login");
-    //     } else {
-    //       this.$message.error('请求错误');
-    //     }
-    //   })
-    // }
 
   },
   //挂载完成
   mounted() {
     this.getUtilPrice();
     this.resetNewUtilPrice();
+    this.getLoadEcharts(2);
+    this.getLoadEcharts(3);
+    this.getLoadEcharts(4);
   }
 }
 </script>
@@ -529,5 +772,12 @@ export default {
   /* background-color: aqua; */
   line-height: 60px;
   padding: 40px;
+}
+
+#elecEchart,
+#waterEchart,
+#gasEchart {
+  width: 600px;
+  height: 300px;
 }
 </style>
